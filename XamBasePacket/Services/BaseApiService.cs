@@ -34,7 +34,7 @@ namespace XamBasePacket.Services
             if (!string.IsNullOrEmpty(baseUrl))
                 HttpClient.BaseAddress = new Uri(baseUrl);
 
-        } 
+        }
         #endregion
 
         protected virtual async Task<Response<T>> MakeRequest<T>(string url,
@@ -62,6 +62,7 @@ namespace XamBasePacket.Services
                     if (responseMessage.IsSuccessStatusCode)
                     {
                         var data = await responseMessage.Content.ReadAsStringAsync();
+                        Console.WriteLine($"Response content as string: {data}");
                         response.Content = JsonConvert.DeserializeObject<T>(data);
                     }
                     else
