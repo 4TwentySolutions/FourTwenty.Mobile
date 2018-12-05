@@ -9,7 +9,7 @@ namespace XamBasePacket.Helpers
 {
     public class ResponseStatusRule
     {
-        public Func<Response, ViewModelBase, bool, Response> RuleExecution { get; set; }
+        public Action<Response, ViewModelBase, bool> RuleExecution { get; set; }
         public HttpStatusCode Code { get; set; }
     }
 
@@ -29,7 +29,6 @@ namespace XamBasePacket.Helpers
                 if (displayError)
                     viewModel.ErrorText = ex.ToString();
             }
-            //response = await task;
             if (response == null)
                 return CreateDefaultResponse<Response<T>>();
             if (response.IsSuccess)

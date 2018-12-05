@@ -44,7 +44,8 @@ namespace XamBasePacket.Services
             string mediaType = "application/json",
             CancellationToken token = default(CancellationToken),
             HttpCompletionOption completionOption = HttpCompletionOption.ResponseContentRead,
-            Dictionary<string, string> requestHeaders = null)
+            Dictionary<string, string> requestHeaders = null,
+            string defaultScheme = "Bearer")
         {
             Response<T> response = new Response<T>();
             try
@@ -81,7 +82,8 @@ namespace XamBasePacket.Services
             string mediaType = "application/json",
             CancellationToken token = default(CancellationToken),
             HttpCompletionOption completionOption = HttpCompletionOption.ResponseContentRead,
-            Dictionary<string, string> requestHeaders = null)
+            Dictionary<string, string> requestHeaders = null,
+            string defaultScheme = "Bearer")
         {
             Response response = new Response();
             try
@@ -113,12 +115,13 @@ namespace XamBasePacket.Services
             string mediaType = "application/json",
             CancellationToken token = default(CancellationToken),
             HttpCompletionOption completionOption = HttpCompletionOption.ResponseContentRead,
-            Dictionary<string, string> requestHeaders = null)
+            Dictionary<string, string> requestHeaders = null,
+            string defaultScheme = "Bearer")
         {
             HttpClient.DefaultRequestHeaders.Accept.Clear();
             HttpClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue(mediaType));
             if (!string.IsNullOrEmpty(accessToken))
-                HttpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", accessToken);
+                HttpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue(defaultScheme, accessToken);
             if (requestHeaders != null)
             {
                 foreach (KeyValuePair<string, string> header in requestHeaders)
