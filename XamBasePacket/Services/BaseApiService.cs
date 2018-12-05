@@ -49,11 +49,6 @@ namespace XamBasePacket.Services
             Response<T> response = new Response<T>();
             try
             {
-                HttpClient.DefaultRequestHeaders.Accept.Clear();
-                HttpClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue(mediaType));
-                if (!string.IsNullOrEmpty(accessToken))
-                    HttpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", accessToken);
-
                 using (var responseMessage = await Execute(url, httpMethod, content, accessToken, mediaType, token,
                     completionOption, requestHeaders))
                 {
@@ -62,14 +57,11 @@ namespace XamBasePacket.Services
                     if (responseMessage.IsSuccessStatusCode)
                     {
                         var data = await responseMessage.Content.ReadAsStringAsync();
-                        Console.WriteLine($"Response content as string: {data}");
                         response.Content = JsonConvert.DeserializeObject<T>(data);
                     }
                     else
                     {
                         response = await HandleErrors(responseMessage, response);
-
-
                     }
                 }
 
@@ -138,23 +130,10 @@ namespace XamBasePacket.Services
 
         }
 
-        private async Task<T> HandleErrors<T>(HttpResponseMessage responseMessage, T response) where T : Response
+        protected virtual async Task<T> HandleErrors<T>(HttpResponseMessage responseMessage, T response) where T : Response
         {
             var data = await responseMessage.Content.ReadAsStringAsync();
-            try
-            {
-                var error = JsonConvert.DeserializeObject<ApiError>(data);
-                response.ErrorMessage = error?.Message;
-            }
-            catch (JsonSerializationException)
-            {
-                response.ErrorMessage = data;
-            }
-            catch (JsonReaderException)
-            {
-                response.ErrorMessage = data;
-            }
-
+            response.ErrorMessage = data;
             return response;
         }
 
