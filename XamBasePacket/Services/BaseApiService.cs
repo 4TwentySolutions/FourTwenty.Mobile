@@ -38,45 +38,6 @@ namespace XamBasePacket.Services
         }
         #endregion
 
-        protected virtual async Task<Response<Stream>> MakeStreamRequest(string url,
-           HttpMethod httpMethod,
-           HttpContent content = null,
-           string accessToken = null,
-           string mediaType = "application/json",
-           CancellationToken token = default(CancellationToken),
-           HttpCompletionOption completionOption = HttpCompletionOption.ResponseContentRead,
-           Dictionary<string, string> requestHeaders = null,
-           string defaultScheme = "Bearer")
-        {
-            Response<Stream> response = new Response<Stream>();
-            try
-            {
-                using (var responseMessage = await Execute(url, httpMethod, content, accessToken, mediaType, token,
-                    completionOption, requestHeaders))
-                {
-                    response.IsSuccess = responseMessage.IsSuccessStatusCode;
-                    response.StatusCode = responseMessage.StatusCode;
-                    if (responseMessage.IsSuccessStatusCode)
-                    {
-                        var data = await responseMessage.Content.ReadAsStreamAsync();
-                        response.Content = data;
-                    }
-                    else
-                    {
-                        response = await HandleErrors(responseMessage, response);
-                    }
-                }
-
-            }
-            catch (HttpRequestException e)
-            {
-                response.IsSuccess = false;
-                response.ErrorMessage = e.Message;
-            }
-            return response;
-        }
-
-
         protected virtual async Task<Response<T>> MakeRequest<T>(string url,
             HttpMethod httpMethod,
             HttpContent content = null,
@@ -97,8 +58,17 @@ namespace XamBasePacket.Services
                     response.StatusCode = responseMessage.StatusCode;
                     if (responseMessage.IsSuccessStatusCode)
                     {
-                        var data = await responseMessage.Content.ReadAsStringAsync();
-                        response.Content = JsonConvert.DeserializeObject<T>(data);
+                        if (typeof(T) != typeof(Stream) || !typeof(T).IsSubclassOf(typeof(Stream)))
+                        {
+                            var data = await responseMessage.Content.ReadAsStringAsync();
+                            response.Content = JsonConvert.DeserializeObject<T>(data);
+
+                        }
+                        else
+                        {
+                            object data = await responseMessage.Content.ReadAsStreamAsync();
+                            response.Content = (T)data;
+                        }
                     }
                     else
                     {
