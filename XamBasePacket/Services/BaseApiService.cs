@@ -58,7 +58,7 @@ namespace XamBasePacket.Services
                     response.StatusCode = responseMessage.StatusCode;
                     if (responseMessage.IsSuccessStatusCode)
                     {
-                        if (typeof(T) != typeof(Stream) || !typeof(T).IsSubclassOf(typeof(Stream)))
+                        if (typeof(T) != typeof(Stream) && !typeof(T).IsSubclassOf(typeof(Stream)))
                         {
                             var data = await responseMessage.Content.ReadAsStringAsync();
                             response.Content = JsonConvert.DeserializeObject<T>(data);
