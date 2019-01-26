@@ -60,9 +60,15 @@ namespace XamBasePacket.Services
                     {
                         if (typeof(T) != typeof(Stream) && !typeof(T).IsSubclassOf(typeof(Stream)))
                         {
-                            var data = await responseMessage.Content.ReadAsStringAsync();
-                            response.Content = JsonConvert.DeserializeObject<T>(data);
-
+                            try
+                            {
+                                var data = await responseMessage.Content.ReadAsStringAsync();
+                                response.Content = JsonConvert.DeserializeObject<T>(data);
+                            }
+                            catch (JsonReaderException ex)
+                            {
+                                response.ErrorMessage = ex.Message;
+                            }
                         }
                         else
                         {
