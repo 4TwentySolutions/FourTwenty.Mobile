@@ -6,6 +6,7 @@ namespace XamBasePacket.Bases
     public class Response<T> : Response
     {
         public T Content { get; set; }
+        public string RawContent { get; set; }
 
         public Response()
         {

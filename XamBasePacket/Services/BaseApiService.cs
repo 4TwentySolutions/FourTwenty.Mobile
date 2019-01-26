@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Threading;
@@ -63,11 +64,13 @@ namespace XamBasePacket.Services
                             try
                             {
                                 var data = await responseMessage.Content.ReadAsStringAsync();
+                                response.RawContent = data;
                                 response.Content = JsonConvert.DeserializeObject<T>(data);
                             }
                             catch (JsonReaderException ex)
                             {
                                 response.ErrorMessage = ex.Message;
+                                response.IsSuccess = false;
                             }
                         }
                         else
