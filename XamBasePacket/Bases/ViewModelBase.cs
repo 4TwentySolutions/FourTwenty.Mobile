@@ -44,8 +44,7 @@ namespace XamBasePacket.Bases
         public virtual void OnNavigatingTo(INavigationParameters parameters)
         {
             ClearErrors();
-            Initialize(parameters).ConfigureAwait(false);
-
+            Task.Run(() => Initialize(parameters).ConfigureAwait(false));
         }
 
 
