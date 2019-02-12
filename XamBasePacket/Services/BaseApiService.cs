@@ -67,7 +67,7 @@ namespace XamBasePacket.Services
                                 response.RawContent = data;
                                 response.Content = JsonConvert.DeserializeObject<T>(data);
                             }
-                            catch (JsonReaderException ex)
+                            catch (JsonException ex)
                             {
                                 response.ErrorMessage = ex.Message;
                                 response.IsSuccess = false;
