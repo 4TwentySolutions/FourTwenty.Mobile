@@ -1,6 +1,9 @@
 using System;
 using System.IO;
+using XamBasePacket.Bases;
+using XamBasePacket.Helpers;
 using XamBasePacket.Tests.Services;
+using XamBasePacket.ViewModels;
 using Xunit;
 
 namespace XamBasePacket.Tests
@@ -30,6 +33,17 @@ namespace XamBasePacket.Tests
         {
             var service = new WebApiTypesService();
             var data = await service.GetModelData();
+            Assert.True(data.IsSuccess);
+            Assert.IsAssignableFrom<WebApiTypesService.SomeModel>(data.Content);
+        }
+
+
+        [Fact]
+        public async void WrapTaskTest()
+        {
+            var service = new WebApiTypesService();
+            var viewModel = new BaseTabbedViewModel();
+            var data = await service.GetModelData().WrapTaskWithApiResponse(viewModel,true);
             Assert.True(data.IsSuccess);
             Assert.IsAssignableFrom<WebApiTypesService.SomeModel>(data.Content);
         }
