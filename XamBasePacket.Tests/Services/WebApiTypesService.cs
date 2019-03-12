@@ -18,22 +18,22 @@ namespace XamBasePacket.Tests.Services
             public string Data { get; set; }
         }
 
-        public Task<Response<Stream>> GetFile()
+        public Task<IResponse<Stream>> GetFile()
         {
             return MakeRequest<Stream>("emptyUrl", HttpMethod.Get);
         }
 
-        public Task<Response<MemoryStream>> GetFileMemory()
+        public Task<IResponse<MemoryStream>> GetFileMemory()
         {
             return MakeRequest<MemoryStream>("emptyUrl", HttpMethod.Get);
         }
 
-        public Task<Response<SomeModel>> GetModelData()
+        public Task<IResponse<SomeModel>> GetModelData()
         {
             return MakeRequest<SomeModel>("emptyUrl", HttpMethod.Get);
         }
 
-        protected override Task<Response<T>> MakeRequest<T>(string url, HttpMethod httpMethod, HttpContent content = null, string accessToken = null,
+        protected override Task<IResponse<T>> MakeRequest<T>(string url, HttpMethod httpMethod, HttpContent content = null, string accessToken = null,
             string mediaType = "application/json", CancellationToken token = default(CancellationToken),
             HttpCompletionOption completionOption = HttpCompletionOption.ResponseContentRead, Dictionary<string, string> requestHeaders = null,
             string defaultScheme = "Bearer")
@@ -51,7 +51,7 @@ namespace XamBasePacket.Tests.Services
                 result = (T)data;
             }
 
-            return Task.FromResult(new Response<T>(true) { Content = (T)result });
+            return Task.FromResult((IResponse<T>)new Response<T>(true) { Content = (T)result });
         }
 
         public WebApiTypesService()

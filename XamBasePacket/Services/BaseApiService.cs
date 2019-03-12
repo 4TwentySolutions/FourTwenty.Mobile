@@ -39,7 +39,7 @@ namespace XamBasePacket.Services
         }
         #endregion
 
-        protected virtual async Task<Response<T>> MakeRequest<T>(string url,
+        protected virtual async Task<IResponse<T>> MakeRequest<T>(string url,
             HttpMethod httpMethod,
             HttpContent content = null,
             string accessToken = null,
@@ -49,7 +49,7 @@ namespace XamBasePacket.Services
             Dictionary<string, string> requestHeaders = null,
             string defaultScheme = "Bearer")
         {
-            Response<T> response = new Response<T>();
+            IResponse<T> response = CreateResponse<T>();
             try
             {
                 using (var responseMessage = await Execute(url, httpMethod, content, accessToken, mediaType, token,
@@ -94,7 +94,7 @@ namespace XamBasePacket.Services
             return response;
         }
 
-        protected virtual async Task<Response> MakeRequest(string url,
+        protected virtual async Task<IResponse> MakeRequest(string url,
             HttpMethod httpMethod,
             HttpContent content = null,
             string accessToken = null,
@@ -104,7 +104,7 @@ namespace XamBasePacket.Services
             Dictionary<string, string> requestHeaders = null,
             string defaultScheme = "Bearer")
         {
-            Response response = new Response();
+            IResponse response = CreateResponse();
             try
             {
                 using (var responseMessage = await Execute(url, httpMethod, content, accessToken, mediaType, token,
@@ -152,11 +152,21 @@ namespace XamBasePacket.Services
 
         }
 
-        protected virtual async Task<T> HandleErrors<T>(HttpResponseMessage responseMessage, T response) where T : Response
+        protected virtual async Task<T> HandleErrors<T>(HttpResponseMessage responseMessage, T response) where T : IResponse
         {
             var data = await responseMessage.Content.ReadAsStringAsync();
             response.ErrorMessage = data;
             return response;
+        }
+
+        protected virtual IResponse CreateResponse()
+        {
+            return new Response();
+        }
+
+        protected virtual IResponse<T> CreateResponse<T>()
+        {
+            return new Response<T>();
         }
 
         /// <summary>
