@@ -17,6 +17,10 @@ namespace XamBasePacket.Tests.Services
         {
             public string Data { get; set; }
         }
+        public Task Dummy()
+        {
+            return Task.FromResult(true);
+        }
 
         public Task<IResponse<Stream>> GetFile()
         {

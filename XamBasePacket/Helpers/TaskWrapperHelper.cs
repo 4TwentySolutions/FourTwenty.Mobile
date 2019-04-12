@@ -9,7 +9,7 @@ namespace XamBasePacket.Helpers
 {
     public class ResponseStatusRule
     {
-        public Action<IResponse, ViewModelBase, bool> RuleExecution { get; set; }
+        public Action<IResponse, ViewModelBase> RuleExecution { get; set; }
         public HttpStatusCode Code { get; set; }
     }
 
@@ -17,68 +17,101 @@ namespace XamBasePacket.Helpers
     {
         public static List<ResponseStatusRule> ResponseStatusRules { get; } = new List<ResponseStatusRule>();
 
-        public static async Task<IResponse<T>> WrapTaskWithApiResponse<T>(this Task<IResponse<T>> task, ViewModelBase viewModel, bool displayError = false)
-        {
-            IResponse<T> response = null;
-            try
-            {
-                response = await task;
-            }
-            catch (Exception ex)
-            {
-                if (displayError)
-                    viewModel.ErrorText = ex.ToString();
-            }
 
+        public static async Task<T> WrapApiTaskDefault<T>(this Task<T> task, ViewModelBase viewModel) where T : class, IResponse
+        {
+            return await task.WrapTaskWithApiResponse(viewModel).WrapTaskWithLoading(viewModel).WrapWithExceptionHandling(viewModel);
+        }
+        public static async Task<T> WrapTaskDefault<T>(this Task<T> task, ViewModelBase viewModel)
+        {
+            return await task.WrapTaskWithLoading(viewModel).WrapWithExceptionHandling(viewModel);
+        }
+        public static async Task WrapTaskDefault(this Task task, ViewModelBase viewModel)
+        {
+            await task.WrapTaskWithLoading(viewModel).WrapWithExceptionHandling(viewModel);
+        }
+
+        public static async Task<T> WrapTaskWithApiResponse<T>(this Task<T> task, ViewModelBase viewModel) where T : class, IResponse
+        {
+            T response = await task;
             if (response == null)
                 return null;
             if (response.IsSuccess)
                 return response;
-
-
-            return HandleErrors(response, ref viewModel, displayError);
+            return HandleErrors(response, ref viewModel);
         }
 
-        public static async Task<IResponse> WrapTaskWithApiResponse(this Task<IResponse> task, ViewModelBase viewModel, bool displayError = false)
+        public static async Task<T> WrapTaskWithLoading<T>(this Task<T> task, ViewModelBase viewModel)
         {
-            IResponse response = null;
             try
             {
-                response = await task;
+                viewModel.IsBusy = true;
+                return await task;
             }
-            catch (Exception ex)
+            finally
             {
-                if (displayError)
-                    viewModel.ErrorText = ex.ToString();
+                viewModel.IsBusy = false;
             }
-
-            if (response == null)
-                return null;
-            if (response.IsSuccess)
-                return response;
-
-
-            return HandleErrors(response, ref viewModel, displayError);
         }
 
-
-        private static T HandleErrors<T>(T response, ref ViewModelBase viewModel, bool displayError) where T : IResponse
+        public static async Task WrapTaskWithLoading(this Task task, ViewModelBase viewModel)
         {
-            if (response.StatusCode == HttpStatusCode.Unauthorized)
+            try
             {
-                viewModel.UnauthorizedApiCall();
-                return response;
+                viewModel.IsBusy = true;
+                await task;
             }
+            finally
+            {
+                viewModel.IsBusy = false;
+            }
+        }
+        public static async Task WrapWithExceptionHandling(this Task task, ViewModelBase viewModel)
+        {
+            try
+            {
+                await task;
+            }
+            catch (OperationCanceledException)
+            {
+                // do nothing, this is an expected behaviour
+            }
+            catch (Exception e)
+            {
+                viewModel.DisplayError(e);                
+            }            
+        }
+        public static async Task<T> WrapWithExceptionHandling<T>(this Task<T> task, ViewModelBase viewModel)
+        {
+            try
+            {
+                return await task;
+            }
+            catch (OperationCanceledException)
+            {
+                // do nothing, this is an expected behaviour
+            }
+            catch (Exception e)
+            {
+                viewModel.DisplayError(e);
+            }
+            return default;
+        }
 
+        private static T HandleErrors<T>(T response, ref ViewModelBase viewModel) where T : IResponse
+        {
             if (ResponseStatusRules.Any(x => x.Code == response.StatusCode))
             {
                 ResponseStatusRules.Find(rule => rule.Code == response.StatusCode)?.RuleExecution
-                    ?.Invoke(response, viewModel, displayError);
+                    ?.Invoke(response, viewModel);
             }
             else
             {
-                if (displayError)
-                    viewModel.DisplayError(response.ErrorMessage);
+                if (response.StatusCode == HttpStatusCode.Unauthorized)
+                {
+                    viewModel.UnauthorizedApiCall();
+                    return response;
+                }
             }
 
             return response;

@@ -43,9 +43,27 @@ namespace XamBasePacket.Tests
         {
             var service = new WebApiTypesService();
             var viewModel = new BaseTabbedViewModel();
-            var data = await service.GetModelData().WrapTaskWithApiResponse(viewModel,true);
+            var data = await service.GetModelData().WrapTaskWithApiResponse(viewModel);
             Assert.True(data.IsSuccess);
             Assert.IsAssignableFrom<WebApiTypesService.SomeModel>(data.Content);
+        }
+
+        [Fact]
+        public async void WrapTaskDeepTest()
+        {
+            var service = new WebApiTypesService();
+            var viewModel = new BaseTabbedViewModel();
+            var data = await service.GetModelData().WrapTaskWithApiResponse(viewModel).WrapTaskWithLoading(viewModel).WrapWithExceptionHandling(viewModel);
+            Assert.True(data.IsSuccess);
+            Assert.IsAssignableFrom<WebApiTypesService.SomeModel>(data.Content);
+        }
+
+        [Fact]
+        public async void WrapTaskDummyTest()
+        {
+            var service = new WebApiTypesService();
+            var viewModel = new BaseTabbedViewModel();
+            await service.Dummy().WrapTaskWithLoading(viewModel).WrapWithExceptionHandling(viewModel);            
         }
     }
 }
