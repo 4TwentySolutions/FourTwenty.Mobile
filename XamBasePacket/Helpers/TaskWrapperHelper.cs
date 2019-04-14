@@ -31,14 +31,14 @@ namespace XamBasePacket.Helpers
             await task.WrapTaskWithLoading(viewModel).WrapWithExceptionHandling(viewModel, displayError);
         }
 
-        public static async Task<T> WrapTaskWithApiResponse<T>(this Task<T> task, ViewModelBase viewModel) where T : class, IResponse
+        public static async Task<T> WrapTaskWithApiResponse<T>(this Task<T> task, ViewModelBase viewModel, bool displayApiError = true) where T : class, IResponse
         {
             T response = await task;
             if (response == null)
                 return null;
             if (response.IsSuccess)
                 return response;
-            return HandleErrors(response, ref viewModel);
+            return HandleErrors(response, ref viewModel, displayApiError);
         }
 
         public static async Task<T> WrapTaskWithLoading<T>(this Task<T> task, ViewModelBase viewModel)
@@ -78,7 +78,7 @@ namespace XamBasePacket.Helpers
             }
             catch (Exception e)
             {
-                viewModel.DisplayError(e, displayError);
+                viewModel.DisplayError(e, null, displayError);
             }
         }
         public static async Task<T> WrapWithExceptionHandling<T>(this Task<T> task, ViewModelBase viewModel, bool displayError = true)
@@ -93,12 +93,12 @@ namespace XamBasePacket.Helpers
             }
             catch (Exception e)
             {
-                viewModel.DisplayError(e, displayError);
+                viewModel.DisplayError(e, null, displayError);
             }
             return default;
         }
 
-        private static T HandleErrors<T>(T response, ref ViewModelBase viewModel) where T : IResponse
+        private static T HandleErrors<T>(T response, ref ViewModelBase viewModel, bool displayError = true) where T : IResponse
         {
             if (ResponseStatusRules.Any(x => x.Code == response.StatusCode))
             {
@@ -113,7 +113,7 @@ namespace XamBasePacket.Helpers
                     return response;
                 }
             }
-
+            viewModel.DisplayError(null, response.ErrorMessage, displayError);
             return response;
         }
 
