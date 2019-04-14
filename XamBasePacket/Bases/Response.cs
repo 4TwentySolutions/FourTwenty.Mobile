@@ -1,5 +1,7 @@
-﻿using System.Net;
+﻿using System;
+using System.Net;
 using System.Net.Http;
+using System.Runtime.Serialization;
 
 namespace XamBasePacket.Bases
 {
@@ -7,6 +9,7 @@ namespace XamBasePacket.Bases
     {
         bool IsSuccess { get; set; }
         string ErrorMessage { get; set; }
+        Exception Error { get; set; }
         HttpStatusCode StatusCode { get; set; }
     }
 
@@ -58,6 +61,7 @@ namespace XamBasePacket.Bases
 
         public bool IsSuccess { get; set; }
         public string ErrorMessage { get; set; }
+        public Exception Error { get; set; }
         public HttpStatusCode StatusCode { get; set; }
     }
 }

@@ -18,17 +18,17 @@ namespace XamBasePacket.Helpers
         public static List<ResponseStatusRule> ResponseStatusRules { get; } = new List<ResponseStatusRule>();
 
 
-        public static async Task<T> WrapApiTaskDefault<T>(this Task<T> task, ViewModelBase viewModel) where T : class, IResponse
+        public static async Task<T> WrapApiTaskDefault<T>(this Task<T> task, ViewModelBase viewModel, bool displayError = true) where T : class, IResponse
         {
-            return await task.WrapTaskWithApiResponse(viewModel).WrapTaskWithLoading(viewModel).WrapWithExceptionHandling(viewModel);
+            return await task.WrapTaskWithApiResponse(viewModel).WrapTaskWithLoading(viewModel).WrapWithExceptionHandling(viewModel, displayError);
         }
-        public static async Task<T> WrapTaskDefault<T>(this Task<T> task, ViewModelBase viewModel)
+        public static async Task<T> WrapTaskDefault<T>(this Task<T> task, ViewModelBase viewModel, bool displayError = true)
         {
-            return await task.WrapTaskWithLoading(viewModel).WrapWithExceptionHandling(viewModel);
+            return await task.WrapTaskWithLoading(viewModel).WrapWithExceptionHandling(viewModel, displayError);
         }
-        public static async Task WrapTaskDefault(this Task task, ViewModelBase viewModel)
+        public static async Task WrapTaskDefault(this Task task, ViewModelBase viewModel, bool displayError = true)
         {
-            await task.WrapTaskWithLoading(viewModel).WrapWithExceptionHandling(viewModel);
+            await task.WrapTaskWithLoading(viewModel).WrapWithExceptionHandling(viewModel, displayError);
         }
 
         public static async Task<T> WrapTaskWithApiResponse<T>(this Task<T> task, ViewModelBase viewModel) where T : class, IResponse
@@ -66,7 +66,7 @@ namespace XamBasePacket.Helpers
                 viewModel.IsBusy = false;
             }
         }
-        public static async Task WrapWithExceptionHandling(this Task task, ViewModelBase viewModel)
+        public static async Task WrapWithExceptionHandling(this Task task, ViewModelBase viewModel, bool displayError = true)
         {
             try
             {
@@ -78,10 +78,10 @@ namespace XamBasePacket.Helpers
             }
             catch (Exception e)
             {
-                viewModel.DisplayError(e);                
-            }            
+                viewModel.DisplayError(e, displayError);
+            }
         }
-        public static async Task<T> WrapWithExceptionHandling<T>(this Task<T> task, ViewModelBase viewModel)
+        public static async Task<T> WrapWithExceptionHandling<T>(this Task<T> task, ViewModelBase viewModel, bool displayError = true)
         {
             try
             {
@@ -93,7 +93,7 @@ namespace XamBasePacket.Helpers
             }
             catch (Exception e)
             {
-                viewModel.DisplayError(e);
+                viewModel.DisplayError(e, displayError);
             }
             return default;
         }

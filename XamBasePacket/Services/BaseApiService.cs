@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using Newtonsoft.Json;
 using XamBasePacket.Bases;
 using System.IO;
+using System.Net;
 
 namespace XamBasePacket.Services
 {
@@ -90,6 +91,13 @@ namespace XamBasePacket.Services
             {
                 response.IsSuccess = false;
                 response.ErrorMessage = e.Message;
+                response.Error = e;
+            }
+            catch (WebException e)
+            {
+                response.IsSuccess = false;
+                response.ErrorMessage = e.Message;
+                response.Error = e;
             }
             return response;
         }
@@ -123,6 +131,13 @@ namespace XamBasePacket.Services
             {
                 response.IsSuccess = false;
                 response.ErrorMessage = e.Message;
+                response.Error = e;
+            }
+            catch (WebException e)
+            {
+                response.IsSuccess = false;
+                response.ErrorMessage = e.Message;
+                response.Error = e;
             }
             return response;
         }

@@ -58,10 +58,11 @@ namespace XamBasePacket.Bases
         {
         }
 
-        public virtual void DisplayError(Exception ex)
+        public virtual void DisplayError(Exception ex, bool displayError = true)
         {
             Error = ex;
-            ErrorText = ex?.Message;
+            if (displayError)
+                ErrorText = ex?.Message;
         }
 
 
