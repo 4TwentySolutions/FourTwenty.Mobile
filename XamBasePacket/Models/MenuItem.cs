@@ -61,16 +61,16 @@ namespace XamBasePacket.Models
             set => SetProperty(ref _isEnabled, value, OnIsEnabledChanged);
         }
 
-        private void OnIsEnabledChanged()
+        protected virtual void OnIsEnabledChanged()
         {
 
         }
 
 
-        private void OnIsSelectedChanged()
+        protected virtual void OnIsSelectedChanged()
         {
             DisplayIcon = IsSelected ? SelectedIcon : NormalIcon;
-            TextColor = IsSelected ? SelectedTextColor : NormalTextColor;
+            TextColor = IsEnabled ? IsSelected ? SelectedTextColor : NormalTextColor : DisabledTextColor;
         }
     }
 }
