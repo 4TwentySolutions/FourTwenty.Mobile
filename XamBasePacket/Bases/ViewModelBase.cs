@@ -6,7 +6,7 @@ using Prism.Navigation;
 namespace XamBasePacket.Bases
 {
 
-    public abstract class ViewModelBase : BindableBase, INavigationAware
+    public abstract class ViewModelBase : BindableBase, INavigatedAware, IInitialize, IInitializeAsync
     {
 
 
@@ -37,21 +37,11 @@ namespace XamBasePacket.Bases
 
         public virtual void OnNavigatedFrom(INavigationParameters parameters)
         {
-
         }
 
         public virtual void OnNavigatedTo(INavigationParameters parameters)
         {
-
         }
-
-        public virtual void OnNavigatingTo(INavigationParameters parameters)
-        {
-            ClearErrors();
-            Task.Run(() => Initialize().ConfigureAwait(false));
-        }
-
-
 
 
         public virtual void UnauthorizedApiCall()
@@ -65,6 +55,15 @@ namespace XamBasePacket.Bases
                 ErrorText = errorMessage ?? ex?.Message;
         }
 
+        public virtual void Initialize(INavigationParameters parameters)
+        {
+            ClearErrors();
+        }
+
+        public virtual Task InitializeAsync(INavigationParameters parameters)
+        {
+            return Task.CompletedTask;
+        }
 
 
         #region protected
@@ -73,10 +72,7 @@ namespace XamBasePacket.Bases
 
         }
 
-        protected virtual Task Initialize()
-        {
-            return Task.FromResult(true);
-        }
+
 
         protected virtual void ClearErrors()
         {
@@ -84,6 +80,7 @@ namespace XamBasePacket.Bases
                 ErrorText = null;
             Error = null;
         }
+
 
         #endregion
 
