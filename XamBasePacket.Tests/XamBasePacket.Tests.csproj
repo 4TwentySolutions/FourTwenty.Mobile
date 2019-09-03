@@ -19,4 +19,7 @@
     <ProjectReference Include="..\XamBasePacket\XamBasePacket.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Validation\" />
+  </ItemGroup>
 </Project>
