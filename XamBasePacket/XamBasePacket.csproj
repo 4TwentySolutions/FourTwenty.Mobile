@@ -4,11 +4,13 @@
     <TargetFramework>netstandard2.0</TargetFramework>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <Authors>Anton Yaroshenko</Authors>
-    <Company>p420</Company>
-    <RepositoryUrl>https://bitbucket.org/p420_team/xambasepacket/</RepositoryUrl>
-    <PackageProjectUrl>https://bitbucket.org/p420_team/xambasepacket/</PackageProjectUrl>
-    <Version>1.1.15</Version>
-    <PackageReleaseNotes>Breaking changes: Removed custom Initialize method and start to using Prism IInitialize and IInitializeAsync interfaces</PackageReleaseNotes>
+    <Company>4Twenty Solutions</Company>
+    <RepositoryUrl>https://bitbucket.org/p420_team/fourtwenty.xamarinbase</RepositoryUrl>
+    <PackageProjectUrl>https://bitbucket.org/p420_team/fourtwenty.xamarinbase</PackageProjectUrl>
+    <Version>1.1.16-prerelease</Version>
+    <PackageReleaseNotes>Breaking changes: Migrate validation to data annotations</PackageReleaseNotes>
+    <AssemblyVersion>1.1.16.0</AssemblyVersion>
+    <FileVersion>1.1.16.0</FileVersion>
   </PropertyGroup>
 
   <ItemGroup>
