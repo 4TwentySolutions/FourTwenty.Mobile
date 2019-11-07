@@ -27,6 +27,12 @@ namespace XamBasePacket.Tests.Services
             return MakeRequest<Stream>("emptyUrl", HttpMethod.Get);
         }
 
+        public Task<IResponse<Stream>> GetGoogleStream()
+        {
+            //HttpClient.BaseAddress = new Uri("google.com");
+            return MakeRequest<Stream>("https://google.com", HttpMethod.Get);
+        }
+
         public Task<IResponse<MemoryStream>> GetFileMemory()
         {
             return MakeRequest<MemoryStream>("emptyUrl", HttpMethod.Get);
@@ -37,11 +43,16 @@ namespace XamBasePacket.Tests.Services
             return MakeRequest<SomeModel>("emptyUrl", HttpMethod.Get);
         }
 
-        protected override Task<IResponse<T>> MakeRequest<T>(string url, HttpMethod httpMethod, HttpContent content = null, string accessToken = null,
+        protected override async Task<IResponse<T>> MakeRequest<T>(string url, HttpMethod httpMethod, HttpContent content = null, string accessToken = null,
             string mediaType = "application/json", CancellationToken token = default(CancellationToken),
             HttpCompletionOption completionOption = HttpCompletionOption.ResponseContentRead, Dictionary<string, string> requestHeaders = null,
             string defaultScheme = "Bearer")
         {
+            if (url.Contains("google"))
+            {
+                return await base.MakeRequest<T>(url, httpMethod, content, accessToken, mediaType, token,
+                    completionOption, requestHeaders, defaultScheme);
+            }
             object result;
             if (typeof(T) != typeof(Stream) && !typeof(T).IsSubclassOf(typeof(Stream)))
             {
@@ -51,11 +62,12 @@ namespace XamBasePacket.Tests.Services
             }
             else
             {
-                object data = new MemoryStream();
-                result = (T)data;
+                var data = new MemoryStream();
+                await data.WriteAsync(new byte[]{1,2,3,4,5,6}, 0,6, token);
+                result = (T)(object)data;
             }
 
-            return Task.FromResult((IResponse<T>)new Response<T>(true) { Content = (T)result });
+            return new Response<T>(true) { Content = (T)result };
         }
 
         public WebApiTypesService()

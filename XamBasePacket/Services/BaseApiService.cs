@@ -12,6 +12,7 @@ using System.Net;
 
 namespace XamBasePacket.Services
 {
+    [Obsolete("Soon will be introduced ApiManager using Refit library.")]
     public abstract class BaseApiService : IDisposable
     {
         #region fields
@@ -53,37 +54,35 @@ namespace XamBasePacket.Services
             IResponse<T> response = CreateResponse<T>();
             try
             {
-                using (var responseMessage = await Execute(url, httpMethod, content, accessToken, mediaType, token,
-                    completionOption, requestHeaders))
+                var responseMessage = await Execute(url, httpMethod, content, accessToken, mediaType, token,
+                    completionOption, requestHeaders);
+                response.IsSuccess = responseMessage.IsSuccessStatusCode;
+                response.StatusCode = responseMessage.StatusCode;
+                if (responseMessage.IsSuccessStatusCode)
                 {
-                    response.IsSuccess = responseMessage.IsSuccessStatusCode;
-                    response.StatusCode = responseMessage.StatusCode;
-                    if (responseMessage.IsSuccessStatusCode)
+                    if (typeof(T) != typeof(Stream) && !typeof(T).IsSubclassOf(typeof(Stream)))
                     {
-                        if (typeof(T) != typeof(Stream) && !typeof(T).IsSubclassOf(typeof(Stream)))
+                        try
                         {
-                            try
-                            {
-                                var data = await responseMessage.Content.ReadAsStringAsync();
-                                response.RawContent = data;
-                                response.Content = JsonConvert.DeserializeObject<T>(data);
-                            }
-                            catch (JsonException ex)
-                            {
-                                response.ErrorMessage = ex.Message;
-                                response.IsSuccess = false;
-                            }
+                            var data = await responseMessage.Content.ReadAsStringAsync();
+                            response.RawContent = data;
+                            response.Content = JsonConvert.DeserializeObject<T>(data);
                         }
-                        else
+                        catch (JsonException ex)
                         {
-                            object data = await responseMessage.Content.ReadAsStreamAsync();
-                            response.Content = (T)data;
+                            response.ErrorMessage = ex.Message;
+                            response.IsSuccess = false;
                         }
                     }
                     else
                     {
-                        response = await HandleErrors(responseMessage, response);
+                        object data = await responseMessage.Content.ReadAsStreamAsync();
+                        response.Content = (T)data;
                     }
+                }
+                else
+                {
+                    response = await HandleErrors(responseMessage, response);
                 }
 
             }
@@ -124,7 +123,6 @@ namespace XamBasePacket.Services
                     {
                         response = await HandleErrors(responseMessage, response);
                     }
-
                 }
             }
             catch (HttpRequestException e)
