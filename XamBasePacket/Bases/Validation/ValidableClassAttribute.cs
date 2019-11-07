@@ -1,14 +1,18 @@
-﻿namespace XamBasePacket.Bases.Validation
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace XamBasePacket.Bases.Validation
 {
     public class ValidableClassAttribute : ValidationAttribute
-    {
-		public override string ErrorMessage { get; protected set; }
-	    public override bool IsValid { get; protected set; } = true;
+    {		
 
+        public override bool IsValid(object value)
+        {
+            return true;
+        }
 
-	    public override bool Validate(object value)
-	    {
-		    return true;
-	    }
+        protected override ValidationResult IsValid(object value, ValidationContext validationContext)
+        {
+            return ValidationResult.Success;
+        }
     }
 }

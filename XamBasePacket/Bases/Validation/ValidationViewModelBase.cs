@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Reflection;
 using System.Resources;
@@ -17,6 +18,7 @@ namespace XamBasePacket.Bases.Validation
             bool result = true;
             try
             {
+
                 var properties = this.GetType().GetProperties()
                 .Where(prop => prop.IsDefined(typeof(ValidationAttribute), false));
                 ClearErrors();
@@ -58,18 +60,18 @@ namespace XamBasePacket.Bases.Validation
             foreach (ValidationAttribute attribute in attributes)
             {
                 var val = property.GetValue(childItem ?? this, null);
-                attribute.Validate(val);
-                if (!attribute.IsValid)
+                bool isValid = attribute.IsValid(val);
+                if (!isValid)
                 {
-                    result = attribute.IsValid;
+                    result = isValid;
                     if (Errors.ContainsKey(property.Name))
                     {
                         if (Errors[property.Name] == null)
                         {
-                            if (attribute.ErrorResourceType != null && !string.IsNullOrEmpty(attribute.ErrorResourceName) && !string.IsNullOrEmpty(attribute.ErrorResourceType.FullName))
+                            if (attribute.ErrorMessageResourceType != null && !string.IsNullOrEmpty(attribute.ErrorMessageResourceName) && !string.IsNullOrEmpty(attribute.ErrorMessageResourceType.FullName))
                             {
-                                ResourceManager resourceManager = new ResourceManager(attribute.ErrorResourceType.FullName, attribute.ErrorResourceType.GetTypeInfo().Assembly);
-                                var res = resourceManager.GetString(attribute.ErrorResourceName, Thread.CurrentThread.CurrentUICulture);
+                                ResourceManager resourceManager = new ResourceManager(attribute.ErrorMessageResourceType.FullName, attribute.ErrorMessageResourceType.GetTypeInfo().Assembly);
+                                var res = resourceManager.GetString(attribute.ErrorMessageResourceName, Thread.CurrentThread.CurrentUICulture);
                                 Errors[property.Name] = new List<string>() { res };
                             }
                             else
@@ -80,12 +82,12 @@ namespace XamBasePacket.Bases.Validation
                         }
                         else
                         {
-                            if (attribute.ErrorResourceType != null &&
-                                !string.IsNullOrEmpty(attribute.ErrorResourceName) &&
-                                !string.IsNullOrEmpty(attribute.ErrorResourceType.FullName))
+                            if (attribute.ErrorMessageResourceType != null &&
+                                !string.IsNullOrEmpty(attribute.ErrorMessageResourceName) &&
+                                !string.IsNullOrEmpty(attribute.ErrorMessageResourceType.FullName))
                             {
-                                ResourceManager resourceManager = new ResourceManager(attribute.ErrorResourceType.FullName, attribute.ErrorResourceType.GetTypeInfo().Assembly);
-                                var res = resourceManager.GetString(attribute.ErrorResourceName, Thread.CurrentThread.CurrentUICulture);
+                                ResourceManager resourceManager = new ResourceManager(attribute.ErrorMessageResourceType.FullName, attribute.ErrorMessageResourceType.GetTypeInfo().Assembly);
+                                var res = resourceManager.GetString(attribute.ErrorMessageResourceName, Thread.CurrentThread.CurrentUICulture);
                                 Errors[property.Name].Add(string.Format(res));
                             }
                             else
@@ -98,10 +100,10 @@ namespace XamBasePacket.Bases.Validation
                     }
                     else
                     {
-                        if (attribute.ErrorResourceType != null && !string.IsNullOrEmpty(attribute.ErrorResourceName) && !string.IsNullOrEmpty(attribute.ErrorResourceType.FullName))
+                        if (attribute.ErrorMessageResourceType != null && !string.IsNullOrEmpty(attribute.ErrorMessageResourceName) && !string.IsNullOrEmpty(attribute.ErrorMessageResourceType.FullName))
                         {
-                            ResourceManager resourceManager = new ResourceManager(attribute.ErrorResourceType.FullName, attribute.ErrorResourceType.GetTypeInfo().Assembly);
-                            var res = resourceManager.GetString(attribute.ErrorResourceName, Thread.CurrentThread.CurrentUICulture);
+                            ResourceManager resourceManager = new ResourceManager(attribute.ErrorMessageResourceType.FullName, attribute.ErrorMessageResourceType.GetTypeInfo().Assembly);
+                            var res = resourceManager.GetString(attribute.ErrorMessageResourceName, Thread.CurrentThread.CurrentUICulture);
                             Errors.Add(property.Name, new List<string>() { res });
                         }
                         else
@@ -114,9 +116,6 @@ namespace XamBasePacket.Bases.Validation
 
             }
         }
-
-
-
 
         protected virtual void DisplayFirstValidationError()
         {
