@@ -16,4 +16,7 @@ Includes all needed classes models and libs to start
 ### Converters
 
  - BoolToIconConverter
- - InverseBooleanConverter
+ - BoolToStringConverter
+ - InverseBooleanConverter - 
+ - IntToBoolConverter
+ - NullToBoolConverter
