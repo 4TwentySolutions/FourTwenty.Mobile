@@ -12,14 +12,15 @@ namespace XamBasePacket.Converters
 
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            if (value == null)
-                return NullIcon;
-            if (value is bool val)
+            switch (value)
             {
-                return val ? TrueIcon : FalseIcon;
+                case null:
+                    return NullIcon;
+                case bool val:
+                    return val ? TrueIcon : FalseIcon;
+                default:
+                    return null;
             }
-
-            return null;
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)

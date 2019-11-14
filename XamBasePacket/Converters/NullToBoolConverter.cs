@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Text;
@@ -12,14 +13,22 @@ namespace XamBasePacket.Converters
 
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            if (value is string str)
-                return string.IsNullOrEmpty(str) ? WhenNull : !WhenNull;
-            return value == null ? WhenNull : !WhenNull;
+            switch (value)
+            {
+                case string str:
+                    return string.IsNullOrEmpty(str) ? WhenNull : !WhenNull;
+                case IList list:
+                    return list.Count > 0 ? !WhenNull : WhenNull;
+                case ICollection collection:
+                    return collection.Count > 0 ? !WhenNull : WhenNull;
+                default:
+                    return value == null ? WhenNull : !WhenNull;
+            }
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            throw new NotImplementedException();
+            return value;
         }
     }
 }
