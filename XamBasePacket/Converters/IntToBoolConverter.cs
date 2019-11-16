@@ -4,20 +4,16 @@ using Xamarin.Forms;
 
 namespace XamBasePacket.Converters
 {
-    public class BoolToIconConverter : IValueConverter
+    public class IntToBoolConverter : IValueConverter
     {
-        public ImageSource NullIcon { get; set; }
-        public ImageSource TrueIcon { get; set; }
-        public ImageSource FalseIcon { get; set; }
-
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
             switch (value)
             {
                 case null:
-                    return NullIcon;
-                case bool val:
-                    return val ? TrueIcon : FalseIcon;
+                    return false;
+                case int val:
+                    return val > 0;
                 default:
                     return null;
             }
@@ -28,6 +24,4 @@ namespace XamBasePacket.Converters
             return value;
         }
     }
-
-
 }

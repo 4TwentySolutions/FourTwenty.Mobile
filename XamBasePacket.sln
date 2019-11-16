@@ -1,11 +1,11 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 15
-VisualStudioVersion = 15.0.28010.2048
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.29503.13
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "XamBasePacket", "XamBasePacket\XamBasePacket.csproj", "{D9610432-AE1D-449A-B537-24050473FD9C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "XamBasePacket.Tests", "XamBasePacket.Tests\XamBasePacket.Tests.csproj", "{668AD77C-5ABB-48E9-A591-ED4CE9E69FF8}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "XamBasePacket.Tests", "XamBasePacket.Tests\XamBasePacket.Tests.csproj", "{668AD77C-5ABB-48E9-A591-ED4CE9E69FF8}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
