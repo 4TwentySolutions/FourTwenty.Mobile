@@ -16,10 +16,8 @@ namespace XamBasePacket.Helpers
             {
 
             }
-            public FileItem(string fileName)
+            public FileItem(string fileName) : this(fileName, fileName)
             {
-                FileName = fileName;
-                Url = fileName;
             }
             public FileItem(string fileName, string url, Stream data = null)
             {
@@ -34,139 +32,137 @@ namespace XamBasePacket.Helpers
         }
 
 
+        public static Task<FileItem> PickPhoto()
+        {
+            return PickPhoto(true);
+        }
+
+        public static Task<FileItem> PickPhoto(bool withData)
+        {
+            return PickPhoto(withData, null);
+        }
+
+        public static Task<FileItem> PickPhoto(PickMediaOptions options)
+        {
+            return PickPhoto(true, options);
+        }
         /// <summary>
         /// Pick photo from gallery
         /// </summary>
         /// <param name="withData">if false data will be null</param>
         /// <param name="options"></param>
         /// <returns>Return path and data in bytes</returns>
-        public static async Task<FileItem> PickPhoto(bool withData = true, PickMediaOptions options = null)
+        public static async Task<FileItem> PickPhoto(bool withData, PickMediaOptions options)
         {
-            try
-            {
-                FileItem result = new FileItem();
-                await CrossMedia.Current.Initialize();
+            await CrossMedia.Current.Initialize();
 
-                if (!CrossMedia.Current.IsPickPhotoSupported)
-                {
-                    throw new InvalidOperationException("Photo picking is not supported");
-                }
-
-                var file = await CrossMedia.Current.PickPhotoAsync(options);
-                if (file == null)
-                    return null;
-                result.Url = file.Path;
-                result.FileName = Path.GetFileName(file.Path);
-                if (withData)
-                    result.Data = file.GetStream();
-                file.Dispose();
-                return result;
-            }
-            catch (Exception ex)
+            if (!CrossMedia.Current.IsPickPhotoSupported)
             {
-                throw ex;
+                throw new InvalidOperationException("Photo picking is not supported");
             }
+
+            var file = await CrossMedia.Current.PickPhotoAsync(options);
+            return HandleMediaFile(file, withData);
         }
 
+
+        public static Task<FileItem> TakePhoto()
+        {
+            return TakePhoto(true);
+        }
+
+        public static Task<FileItem> TakePhoto(bool withData)
+        {
+            return TakePhoto(withData, null);
+        }
+
+        public static Task<FileItem> TakePhoto(StoreCameraMediaOptions options)
+        {
+            return TakePhoto(true, options);
+        }
         /// <summary>
         /// Take photo from camera
         /// </summary>
         /// <param name="withData">if false data will be null</param>
         /// <param name="options"></param>
         /// <returns>Return path and data in bytes</returns>
-        public static async Task<FileItem> TakePhoto(bool withData = true, StoreCameraMediaOptions options = null)
+        public static async Task<FileItem> TakePhoto(bool withData, StoreCameraMediaOptions options)
         {
-            try
-            {
-                FileItem result = new FileItem();
-                await CrossMedia.Current.Initialize();
+            await CrossMedia.Current.Initialize();
 
-                if (!CrossMedia.Current.IsTakePhotoSupported || !CrossMedia.Current.IsCameraAvailable)
-                {
-                    throw new InvalidOperationException("Photo taking is not supported");
-                }
-
-                var file = await CrossMedia.Current.TakePhotoAsync(options ?? new StoreCameraMediaOptions());
-                if (file == null)
-                    return null;
-                result.Url = file.Path;
-                result.FileName = Path.GetFileName(file.Path);
-                if (withData)
-                    result.Data = file.GetStream();
-                file.Dispose();
-                return result;
-            }
-            catch (Exception ex)
+            if (!CrossMedia.Current.IsTakePhotoSupported || !CrossMedia.Current.IsCameraAvailable)
             {
-                throw ex;
+                throw new InvalidOperationException("Photo taking is not supported");
             }
+
+            var file = await CrossMedia.Current.TakePhotoAsync(options ?? new StoreCameraMediaOptions());
+            return HandleMediaFile(file, withData);
+        }
+        public static Task<FileItem> TakeVideo()
+        {
+            return TakeVideo(true);
         }
 
+        public static Task<FileItem> TakeVideo(bool withData)
+        {
+            return TakeVideo(withData, null);
+        }
+
+        public static Task<FileItem> TakeVideo(StoreVideoOptions options)
+        {
+            return TakeVideo(true, options);
+        }
         /// <summary>
         /// 
         /// </summary>
         /// <param name="withData">if false data will be null</param>
         /// <param name="options"></param>
         /// <returns>Return path and data in bytes</returns>
-        public static async Task<FileItem> TakeVideo(bool withData = true, StoreVideoOptions options = null)
+        public static async Task<FileItem> TakeVideo(bool withData, StoreVideoOptions options)
         {
-            try
-            {
-                FileItem result = new FileItem();
-                await CrossMedia.Current.Initialize();
+            await CrossMedia.Current.Initialize();
 
-                if (!CrossMedia.Current.IsTakeVideoSupported || !CrossMedia.Current.IsCameraAvailable)
-                {
-                    throw new InvalidOperationException("Video taking is not supported");
-                }
-
-                var file = await CrossMedia.Current.TakeVideoAsync(options ?? new StoreVideoOptions());
-                if (file == null)
-                    return null;
-                result.Url = file.Path;
-                result.FileName = Path.GetFileName(file.Path);
-                if (withData)
-                    result.Data = file.GetStream();
-                file.Dispose();
-                return result;
-            }
-            catch (Exception ex)
+            if (!CrossMedia.Current.IsTakeVideoSupported || !CrossMedia.Current.IsCameraAvailable)
             {
-                throw ex;
+                throw new InvalidOperationException("Video taking is not supported");
             }
+
+            var file = await CrossMedia.Current.TakeVideoAsync(options ?? new StoreVideoOptions());
+            return HandleMediaFile(file, withData);
         }
-
+        public static Task<FileItem> PickVideo()
+        {
+            return PickVideo(true);
+        }
         /// <summary>
         /// 
         /// </summary>
         /// <param name="withData">if false data will be null</param>
         /// <returns>Return path and data in bytes</returns>
-        public static async Task<FileItem> PickVideo(bool withData = true)
+        public static async Task<FileItem> PickVideo(bool withData)
         {
-            try
-            {
-                FileItem result = new FileItem();
-                await CrossMedia.Current.Initialize();
+            await CrossMedia.Current.Initialize();
 
-                if (!CrossMedia.Current.IsTakeVideoSupported || !CrossMedia.Current.IsCameraAvailable)
-                {
-                    throw new InvalidOperationException("Video taking is not supported");
-                }
-
-                var file = await CrossMedia.Current.PickVideoAsync();
-                if (file == null)
-                    return null;
-                result.Url = file.Path;
-                result.FileName = Path.GetFileName(file.Path);
-                if (withData)
-                    result.Data = file.GetStream();
-                file.Dispose();
-                return result;
-            }
-            catch (Exception ex)
+            if (!CrossMedia.Current.IsTakeVideoSupported || !CrossMedia.Current.IsCameraAvailable)
             {
-                throw ex;
+                throw new InvalidOperationException("Video taking is not supported");
             }
+
+            var file = await CrossMedia.Current.PickVideoAsync();
+            return HandleMediaFile(file, withData);
+        }
+
+        private static FileItem HandleMediaFile(MediaFile file, bool withData)
+        {
+            FileItem result = new FileItem();
+            if (file == null)
+                return null;
+            result.Url = file.Path;
+            result.FileName = Path.GetFileName(file.Path);
+            if (withData)
+                result.Data = file.GetStream();
+            file.Dispose();
+            return result;
         }
 
     }

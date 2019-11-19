@@ -10,9 +10,15 @@ namespace XamBasePacket.Bases.Validation
 {
     public abstract class ValidationViewModelBase : ViewModelBase
     {
-        public readonly Dictionary<string, List<string>> Errors = new Dictionary<string, List<string>>();
+        public Dictionary<string, List<string>> Errors { get; } = new Dictionary<string, List<string>>();
+        protected bool DisplayOnlyFirstError { get; set; }
 
-        protected virtual bool IsModelValid(bool displayErrors = false)
+        protected bool IsModelValid()
+        {
+            return IsModelValid(false);
+        }
+
+        protected virtual bool IsModelValid(bool displayErrors)
         {
 
             bool result = true;
@@ -24,12 +30,22 @@ namespace XamBasePacket.Bases.Validation
                 ClearErrors();
                 foreach (PropertyInfo info in properties)
                 {
-                    var attributes = (info.GetCustomAttributes(typeof(ValidationAttribute), false) as ValidationAttribute[]);
-                    if (attributes != null)
+                    if (info.GetCustomAttributes(typeof(ValidationAttribute), false) is ValidationAttribute[] attributes)
                         ValidateAttributes(info, attributes, ref result);
                 }
+
                 if (!result && displayErrors)
-                    DisplayValidationErrors();
+                {
+                    if (DisplayOnlyFirstError)
+                    {
+                        DisplayFirstValidationError();
+                    }
+                    else
+                    {
+                        DisplayValidationErrors();
+                    }
+                }
+
             }
             catch (Exception ex)
             {
@@ -72,12 +88,12 @@ namespace XamBasePacket.Bases.Validation
                             {
                                 ResourceManager resourceManager = new ResourceManager(attribute.ErrorMessageResourceType.FullName, attribute.ErrorMessageResourceType.GetTypeInfo().Assembly);
                                 var res = resourceManager.GetString(attribute.ErrorMessageResourceName, Thread.CurrentThread.CurrentUICulture);
-                                Errors[property.Name] = new List<string>() { res };
+                                Errors[property.Name] = new List<string> { res };
                             }
                             else
                             {
 
-                                Errors[property.Name] = new List<string>() { attribute.ErrorMessage };
+                                Errors[property.Name] = new List<string> { attribute.ErrorMessage };
                             }
                         }
                         else
@@ -104,11 +120,11 @@ namespace XamBasePacket.Bases.Validation
                         {
                             ResourceManager resourceManager = new ResourceManager(attribute.ErrorMessageResourceType.FullName, attribute.ErrorMessageResourceType.GetTypeInfo().Assembly);
                             var res = resourceManager.GetString(attribute.ErrorMessageResourceName, Thread.CurrentThread.CurrentUICulture);
-                            Errors.Add(property.Name, new List<string>() { res });
+                            Errors.Add(property.Name, new List<string> { res });
                         }
                         else
                         {
-                            Errors.Add(property.Name, new List<string>() { attribute.ErrorMessage });
+                            Errors.Add(property.Name, new List<string> { attribute.ErrorMessage });
                         }
 
                     }
