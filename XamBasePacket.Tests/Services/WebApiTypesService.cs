@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using Newtonsoft.Json;
 using XamBasePacket.Bases;
 using XamBasePacket.Services;
+using XamBasePacket.Services.Api;
 
 namespace XamBasePacket.Tests.Services
 {
