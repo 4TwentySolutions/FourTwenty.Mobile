@@ -82,7 +82,7 @@ namespace XamBasePacket.Services.Api
                 var task = apiCallFunction.Invoke(cts.Token);
                 try
                 {
-                    Logger.LogInformation($"{nameof(ApiManager)} - Task run with ID: {task.Id}");
+                    Logger?.LogInformation($"{nameof(ApiManager)} - Task run with ID: {task.Id}");
                     RunningTasks.TryAdd(task.Id, cts);
                     var result = await task;
                     return result;
@@ -90,7 +90,7 @@ namespace XamBasePacket.Services.Api
                 finally
                 {
 
-                    Logger.LogInformation($"{nameof(ApiManager)} - Task with ID: {task.Id} removed from list");
+                    Logger?.LogInformation($"{nameof(ApiManager)} - Task with ID: {task.Id} removed from list");
                     RunningTasks.TryRemove(task.Id, out _);
                 }
             }
@@ -145,7 +145,7 @@ namespace XamBasePacket.Services.Api
 
         protected virtual void CheckInternet()
         {
-            Logger.LogInformation($"{nameof(ApiManager)} - Internet is available: {IsConnected}");
+            Logger?.LogInformation($"{nameof(ApiManager)} - Internet is available: {IsConnected}");
             if (!IsConnected)
             {
                 throw new NoInternetException();
@@ -165,13 +165,13 @@ namespace XamBasePacket.Services.Api
         {
             try
             {
-                Logger.LogInformation($"{nameof(Dispose)} | {GetType().Name}, {nameof(disposing)}={disposing}");
+                Logger?.LogInformation($"{nameof(Dispose)} | {GetType().Name}, {nameof(disposing)}={disposing}");
                 if (_disposed)
                     return;
                 if (disposing)
                 {
 
-                    Logger.LogInformation($"{nameof(RunningTasks)}.{nameof(RunningTasks.Count)} = {RunningTasks.Count}");
+                    Logger?.LogInformation($"{nameof(RunningTasks)}.{nameof(RunningTasks.Count)} = {RunningTasks.Count}");
                     foreach (var item in RunningTasks)
                     {
                         item.Value.Cancel();
@@ -185,7 +185,7 @@ namespace XamBasePacket.Services.Api
             }
             finally
             {
-                Logger.LogInformation($"{nameof(Dispose)} Ended | {GetType().Name}, {nameof(disposing)}={disposing}");
+                Logger?.LogInformation($"{nameof(Dispose)} Ended | {GetType().Name}, {nameof(disposing)}={disposing}");
             }
         }
 
