@@ -8,14 +8,13 @@
     <owners>4Twenty Solutions</owners>
     <license type="expression">MIT</license>
     <projectUrl>https://github.com/4TwentySolutions/FourTwenty.XamarinBase</projectUrl>
-    <iconUrl>https://4twenty.solutions/images/resources/logo_small.png</iconUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <description>Includes all needed classes models and libs to start developing Xamarin application.</description>
     <releaseNotes></releaseNotes>
     <copyright>Copyright 2018 4Twenty Solutions</copyright>
     <tags>xamarin forms, prism, mvvm</tags>
 	<icon>logo_small.png</icon>
-	<iconUrl>https://github.com/4TwentySolutions/FourTwenty.XamarinBase/raw/$repo$/logo_small.png</icon>
+	<iconUrl>https://github.com/4TwentySolutions/FourTwenty.XamarinBase/raw/$repo$/logo_small.png</iconUrl>
     <dependencies>
       <group targetFramework=".NETStandard2.0">
         <dependency id="CommonServiceLocator" version="2.0.5" exclude="Build,Analyzers" />
