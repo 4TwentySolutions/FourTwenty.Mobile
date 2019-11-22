@@ -4,10 +4,9 @@
     <id>XamBasePacket</id>
     <version>1.0.18</version>
     <title>FourTwenty.XamarinBase</title>
-    <authors>Anton Yaroshenko, Pavel Kurianov</authors>
-    <owners>Anton Yaroshenko</owners>
-	<company>4Twenty Solutions</company>
-    <licenseUrl>https://github.com/4TwentySolutions/FourTwenty.XamarinBase/blob/master/LICENSE</licenseUrl>
+    <authors>Anton Yaroshenko, Pavel Kurianov, 4Twenty Solutions</authors>
+    <owners>4Twenty Solutions</owners>
+    <license type="expression">MIT</license>
     <projectUrl>https://github.com/4TwentySolutions/FourTwenty.XamarinBase</projectUrl>
     <iconUrl>https://4twenty.solutions/images/resources/logo_small.png</iconUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
