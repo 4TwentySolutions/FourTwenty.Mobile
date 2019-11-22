@@ -14,6 +14,7 @@
     <releaseNotes></releaseNotes>
     <copyright>Copyright 2018 4Twenty Solutions</copyright>
     <tags>xamarin forms, prism, mvvm</tags>
+	<icon>logo_small.png</icon>
     <dependencies>
       <group targetFramework=".NETStandard2.0">
         <dependency id="CommonServiceLocator" version="2.0.5" exclude="Build,Analyzers" />
@@ -32,6 +33,7 @@
     <summary></summary>
   </metadata>
   <files>
-    <file src="XamBasePacket.dll" target="lib\netstandard2.0" />    
+    <file src="XamBasePacket.dll" target="lib\netstandard2.0" /> 
+	<file src="..\..\..\..\..\logo_small.png" target="" />    	
   </files>
 </package>
