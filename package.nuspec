@@ -10,7 +10,7 @@
     <projectUrl>https://github.com/4TwentySolutions/FourTwenty.XamarinBase</projectUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <description>Includes all needed classes models and libs to start developing Xamarin application.</description>
-    <releaseNotes></releaseNotes>
+    <releaseNotes>$notes$</releaseNotes>
     <copyright>Copyright 2018 4Twenty Solutions</copyright>
     <tags>xamarin forms, prism, mvvm</tags>
 	<icon>logo_small.png</icon>
