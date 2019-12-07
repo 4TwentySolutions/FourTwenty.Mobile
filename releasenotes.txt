@@ -1,1 +1,4 @@
-API manager introduced
+Added IHttpClientProvider to extend Refit api service helpers
+Added IHttpClientOptions for IHttpClientProvider
+Refactored Api services and api manager.
+Introduced ExtendedApiManager
