@@ -5,28 +5,39 @@ using System.Net;
 using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
-using CommonServiceLocator;
 using Microsoft.Extensions.Logging;
 using Polly;
 using Refit;
 using Xamarin.Essentials;
 using XamBasePacket.Bases;
 using XamBasePacket.Exceptions;
+using XamBasePacket.Interfaces.Api;
 
 namespace XamBasePacket.Services.Api
 {
+
+    public class ApiManager<T> : ApiManager
+    {
+        protected IApiService<T> ApiService { get; }
+
+        public ApiManager(IApiService<T> apiService, ILogger logger) : base(logger)
+        {
+            ApiService = apiService;
+        }
+    }
+
     public class ApiManager : IApiManager, IDisposable
     {
-        private bool _disposed = false;
+        private bool _disposed;
 
         protected ConcurrentDictionary<int, CancellationTokenSource> RunningTasks = new ConcurrentDictionary<int, CancellationTokenSource>();
         protected bool IsConnected => Connectivity.NetworkAccess == NetworkAccess.Internet;
         protected ILogger Logger;
 
 
-        public ApiManager(ILogger logger = null)
+        public ApiManager(ILogger logger)
         {
-            Logger = logger ?? (ServiceLocator.IsLocationProviderSet ? ServiceLocator.Current.GetInstance<ILogger>() : null);
+            Logger = logger;
             Connectivity.ConnectivityChanged += Connectivity_ConnectivityChanged;
         }
 
