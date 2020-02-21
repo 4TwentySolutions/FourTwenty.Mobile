@@ -1,7 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Text;
 using System.Threading.Tasks;
 using Plugin.Media;
 using Plugin.Media.Abstractions;
@@ -10,6 +8,11 @@ namespace XamBasePacket.Helpers
 {
     public static class ImagePickerHelper
     {
+        /// <summary>
+        /// Set flag to use GetStreamWithImageRotatedForExternalStorage for fixing image rotation in ios. This issue should be fixed since 4.4.8
+        /// </summary>
+        public static bool UseGetStreamWithImageRotatedForExternalStorage = false;
+
         public class FileItem
         {
             public FileItem()
@@ -160,7 +163,7 @@ namespace XamBasePacket.Helpers
             result.Url = file.Path;
             result.FileName = Path.GetFileName(file.Path);
             if (withData)
-                result.Data = file.GetStream();
+                result.Data = UseGetStreamWithImageRotatedForExternalStorage ? file.GetStreamWithImageRotatedForExternalStorage() : file.GetStream();
             file.Dispose();
             return result;
         }

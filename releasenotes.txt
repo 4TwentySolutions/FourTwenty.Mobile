@@ -1,4 +1,2 @@
-Added IHttpClientProvider to extend Refit api service helpers
-Added IHttpClientOptions for IHttpClientProvider
-Refactored Api services and api manager.
-Introduced ExtendedApiManager
+Added UseGetStreamWithImageRotatedForExternalStorage in ImagePickerHelper as a workaround for IOS rotation bug. This issue should be fixed since 4.4.8
+Updated nuget packages to latest
