@@ -19,6 +19,39 @@ namespace XamBasePacket.Helpers
             public string ErrorMessage { get; set; }
         }
 
+        public static async Task<bool> PermissionsRequest<T>(PermissionParameters parameters) where T : BasePermission, new()
+        {
+            try
+            {
+                var status = await CrossPermissions.Current.CheckPermissionStatusAsync<T>();
+                if (status != PermissionStatus.Granted)
+                {
+                    if (await CrossPermissions.Current.ShouldShowRequestPermissionRationaleAsync(parameters.Permission))
+                    {
+                        await parameters.PageDialogService.DisplayAlertAsync(parameters.RationaleTitle, parameters.RationaleMessage, BaseResource.Ok);
+                    }
+
+                    status = await CrossPermissions.Current.RequestPermissionAsync<T>();
+                }
+
+                if (status == PermissionStatus.Granted)
+                {
+                    return true;
+                }
+
+                if (status != PermissionStatus.Unknown)
+                {
+                    await parameters.PageDialogService.DisplayAlertAsync(parameters.ErrorTitle, parameters.ErrorMessage, BaseResource.Ok);
+                }
+            }
+            catch (Exception)
+            {
+                //ignore
+            }
+
+            return false;
+        }
+        [Obsolete("Use PermissionsRequest<T> instead")]
         public static async Task<bool> PermissionsRequest(PermissionParameters parameters)
         {
             try
