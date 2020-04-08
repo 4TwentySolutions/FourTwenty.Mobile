@@ -22,6 +22,7 @@ namespace XamBasePacket.Models
         public HttpClientOptions(Uri baseAddress, HttpMessageHandler messageHandler, Priority priority) : this(baseAddress, messageHandler, priority, null) { }
         public HttpClientOptions() : this(null, null, Priority.UserInitiated, null) { }
 
+        public string Name { get; set; }
         public Uri BaseAddress { get; set; }
         public HttpMessageHandler MessageHandler { get; set; }
         public Priority Priority { get; set; }

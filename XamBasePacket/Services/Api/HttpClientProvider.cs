@@ -1,5 +1,6 @@
 ﻿using System.Collections.Concurrent;
 using System.Net.Http;
+using System.Net.Http.Headers;
 using System.Threading.Tasks;
 using Fusillade;
 using Refit;
@@ -51,5 +52,9 @@ namespace XamBasePacket.Services.Api
             _ => NetCache.UserInitiated
         };
 
+        public HttpClient CreateClient(string name)
+        {
+            return GetClient();
+        }
     }
 }
