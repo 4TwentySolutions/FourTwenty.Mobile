@@ -5,6 +5,7 @@ using XamBasePacket.Bases.Validation;
 
 namespace XamBasePacket.ViewModels
 {
+
     public class BaseTabbedViewModel : ValidationViewModelBase, IActiveAware
     {
         public BaseTabbedViewModel()

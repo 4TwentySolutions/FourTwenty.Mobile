@@ -2,6 +2,7 @@
 
 namespace XamBasePacket.Bases.Validation
 {
+
     public class ValidableClassAttribute : ValidationAttribute
     {		
 
@@ -15,4 +16,5 @@ namespace XamBasePacket.Bases.Validation
             return ValidationResult.Success;
         }
     }
+    
 }

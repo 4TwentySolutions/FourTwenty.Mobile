@@ -7,7 +7,7 @@ using Xamarin.Forms;
 
 namespace XamBasePacket.Converters
 {
-    public class NullToBoolConverter : IValueConverter
+    public partial class NullToBoolConverter : IValueConverter
     {
         public bool WhenNull { get; set; }
 

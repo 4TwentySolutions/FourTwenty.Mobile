@@ -31,7 +31,7 @@ namespace XamBasePacket.Services.Api
         private bool _disposed;
 
         protected ConcurrentDictionary<int, CancellationTokenSource> RunningTasks = new ConcurrentDictionary<int, CancellationTokenSource>();
-        protected bool IsConnected => Connectivity.NetworkAccess == NetworkAccess.Internet;
+        protected bool IsConnected => Xamarin.Essentials.Connectivity.NetworkAccess == Xamarin.Essentials.NetworkAccess.Internet;
         protected ILogger Logger;
 
 
@@ -43,7 +43,7 @@ namespace XamBasePacket.Services.Api
 
         protected virtual void Connectivity_ConnectivityChanged(object sender, ConnectivityChangedEventArgs e)
         {
-            if (e.NetworkAccess == NetworkAccess.Internet) return;
+            if (e.NetworkAccess == Xamarin.Essentials.NetworkAccess.Internet) return;
 
             //Cancel All Running Task
             var items = RunningTasks.ToList();

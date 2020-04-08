@@ -4,7 +4,7 @@ using Xamarin.Forms;
 
 namespace XamBasePacket.Converters
 {
-    public class InverseBooleanConverter : IValueConverter
+    public partial class InverseBooleanConverter : IValueConverter
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
