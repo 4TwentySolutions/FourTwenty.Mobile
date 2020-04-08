@@ -14,41 +14,7 @@ namespace XamBasePacket.Effects
             RightLeft
         }
 
-        public static readonly BindableProperty OnProperty =
-            BindableProperty.CreateAttached(
-                propertyName: "On",
-                returnType: typeof(bool),
-                declaringType: typeof(GradientBackground),
-                defaultValue: false,
-                propertyChanged: OnOffChanged
-            );
-
-        public static void SetOn(BindableObject view, bool value)
-        {
-            view.SetValue(OnProperty, value);
-        }
-
-        public static bool GetOn(BindableObject view)
-        {
-            return (bool)view.GetValue(OnProperty);
-        }
-
-        private static void OnOffChanged(BindableObject bindable, object oldValue, object newValue)
-        {
-            if (!(bindable is Element view))
-                return;
-
-            if ((bool)newValue)
-            {
-                view.Effects.Add(new GradientBackgroundEffect());
-            }
-            else
-            {
-                var toRemove = view.Effects.FirstOrDefault(e => e is GradientBackgroundEffect);
-                if (toRemove != null)
-                    view.Effects.Remove(toRemove);
-            }
-        }
+        public static readonly BindableProperty OnProperty = BaseOptions<GradientBackgroundEffect>.OnProperty;
 
 
         public static readonly BindableProperty FromColorProperty =
@@ -144,7 +110,7 @@ namespace XamBasePacket.Effects
 
     class GradientBackgroundEffect : RoutingEffect
     {
-        public GradientBackgroundEffect() : base("XamBasePacket.GradientBackgroundPlatformEffect")
+        public GradientBackgroundEffect() : base("XamBasePacket.Effects.GradientBackgroundPlatformEffect")
         {
         }
     }

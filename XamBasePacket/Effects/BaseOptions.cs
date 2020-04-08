@@ -1,6 +1,7 @@
 ﻿using System.Linq;
 using Xamarin.Forms;
 
+[assembly: ResolutionGroupName("XamBasePacket.Effects")]
 namespace XamBasePacket.Effects
 {
     public static class BaseOptions<TEffect> where TEffect : RoutingEffect, new()
