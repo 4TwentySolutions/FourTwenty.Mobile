@@ -43,11 +43,9 @@
         <dependency id="fusillade" version="2.0.5" exclude="Build,Analyzers" />
       </group>
 	  <group targetFramework="MonoAndroid">
-        <dependency id="System.Numerics" exclude="Build,Analyzers" />
         <dependency id="System.Numerics.Vectors" exclude="Build,Analyzers" />
       </group>
 	   <group targetFramework="Xamarin.iOS10">
-        <dependency id="System.Numerics" exclude="Build,Analyzers" />
         <dependency id="System.Numerics.Vectors" exclude="Build,Analyzers" />
         <dependency id="OpenTK-1.0" exclude="Build,Analyzers" />
       </group>
