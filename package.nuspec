@@ -55,8 +55,8 @@
     <summary></summary>
   </metadata>
   <files>
-    <file src="XamBasePacket\bin\Release\netstandard2.0\publish\XamBasePacket.dll" target="lib\netstandard2.0" /> 
-    <file src="XamBasePacket\bin\Release\netstandard2.1\publish\XamBasePacket.dll" target="lib\netstandard2.1" /> 
+    <file src="XamBasePacket\bin\Release\netstandard2.0\XamBasePacket.dll" target="lib\netstandard2.0" /> 
+    <file src="XamBasePacket\bin\Release\netstandard2.1\XamBasePacket.dll" target="lib\netstandard2.1" /> 
 	
 	<!-- iOS reference assemblies -->
     <file src="XamBasePacket\bin\Release\xamarin.ios10\XamBasePacket.dll" target="lib\xamarin.ios10" />
