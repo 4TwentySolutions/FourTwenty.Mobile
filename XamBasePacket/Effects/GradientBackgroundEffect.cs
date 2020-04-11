@@ -15,6 +15,8 @@ namespace XamBasePacket.Effects
         }
 
         public static readonly BindableProperty OnProperty = BaseOptions<GradientBackgroundEffect>.OnProperty;
+        public static void SetOn(BindableObject view, bool value) => view.SetValue(OnProperty, value);
+        public static bool GetOn(BindableObject view) => (bool)view.GetValue(OnProperty);
 
 
         public static readonly BindableProperty FromColorProperty =
