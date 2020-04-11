@@ -1,3 +1,1 @@
-Added Storage services
-Added IApp interface
-Extended IHttpclientprovider to use Microsoft httpclient facotry
+Breaking change: added platform effects: GradientBackgroundEffect
