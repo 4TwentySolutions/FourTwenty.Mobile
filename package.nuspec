@@ -47,7 +47,6 @@
       </group>
 	   <group targetFramework="Xamarin.iOS10">
         <dependency id="System.Numerics.Vectors" exclude="Build,Analyzers" />
-        <dependency id="OpenTK-1.0" exclude="Build,Analyzers" />
       </group>
     </dependencies>
     <summary></summary>
