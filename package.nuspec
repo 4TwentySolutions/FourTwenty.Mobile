@@ -43,8 +43,6 @@
         <dependency id="fusillade" version="2.0.5" exclude="Build,Analyzers" />
       </group>
 	  <group targetFramework="MonoAndroid">
-        <dependency id="System.Numerics.Vectors" exclude="Build,Analyzers" />
-		
 		<dependency id="CommonServiceLocator" version="2.0.5" exclude="Build,Analyzers" />
         <dependency id="Microsoft.Extensions.Logging.Abstractions" version="3.0.1" exclude="Build,Analyzers" />
         <dependency id="Newtonsoft.Json" version="12.0.3" exclude="Build,Analyzers" />
@@ -58,8 +56,6 @@
         <dependency id="fusillade" version="2.0.5" exclude="Build,Analyzers" />
       </group>
 	   <group targetFramework="Xamarin.iOS10">
-        <dependency id="System.Numerics.Vectors" exclude="Build,Analyzers" />
-		
 		<dependency id="CommonServiceLocator" version="2.0.5" exclude="Build,Analyzers" />
         <dependency id="Microsoft.Extensions.Logging.Abstractions" version="3.0.1" exclude="Build,Analyzers" />
         <dependency id="Newtonsoft.Json" version="12.0.3" exclude="Build,Analyzers" />
