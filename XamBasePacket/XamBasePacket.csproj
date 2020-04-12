@@ -7,10 +7,8 @@
         <Company>4Twenty Solutions</Company>
         <RepositoryUrl>https://github.com/4TwentySolutions/FourTwenty.XamarinBase</RepositoryUrl>
         <PackageProjectUrl>https://github.com/4TwentySolutions/FourTwenty.XamarinBase</PackageProjectUrl>
-        <Version>1.1.17-prerelease</Version>
+        <Version>$(packVersion)</Version>
         <PackageReleaseNotes>Fixed AccessDisposed exception when using streams with Api service</PackageReleaseNotes>
-        <AssemblyVersion>1.1.17.0</AssemblyVersion>
-        <FileVersion>1.1.17.0</FileVersion>
         <Product>FourTwenty.XamarinBase</Product>
         <LangVersion>Latest</LangVersion>
         <EnableDefaultCompileItems>false</EnableDefaultCompileItems>
