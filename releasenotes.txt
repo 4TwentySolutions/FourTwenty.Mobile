@@ -1,1 +1,1 @@
-Breaking change: added platform effects: GradientBackgroundEffect
+Added missing StorageService/SecureStorageServices implementations
