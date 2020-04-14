@@ -1,8 +1,7 @@
 ﻿using System;
 using System.Threading.Tasks;
-using Plugin.Permissions;
-using Plugin.Permissions.Abstractions;
 using Prism.Services;
+using Xamarin.Essentials;
 using XamBasePacket.Resources;
 
 namespace XamBasePacket.Helpers
@@ -11,81 +10,56 @@ namespace XamBasePacket.Helpers
     {
         public class PermissionParameters
         {
-            public Permission Permission { get; set; }
             public IPageDialogService PageDialogService { get; set; }
-            public string RationaleTitle { get; set; }
-            public string RationaleMessage { get; set; }
             public string ErrorTitle { get; set; }
             public string ErrorMessage { get; set; }
+            public bool ShowError { get; set; } = true;
         }
 
-        public static async Task<bool> PermissionsRequest<T>(PermissionParameters parameters) where T : BasePermission, new()
+        public class PermissionResult
+        {
+            public PermissionResult(PermissionStatus status)
+            {
+                Status = status;
+            }
+
+            public PermissionResult(Exception error)
+            {
+                Error = error;
+            }
+            public bool Result => Status == PermissionStatus.Granted && Error == null;
+            public PermissionStatus Status { get; set; }
+            public Exception Error { get; set; }
+
+            public static implicit operator bool(PermissionResult d) => d.Result;
+
+        }
+
+        public static async Task<PermissionResult> PermissionsRequest<T>(PermissionParameters parameters) where T : Permissions.BasePermission, new()
         {
             try
             {
-                var status = await CrossPermissions.Current.CheckPermissionStatusAsync<T>();
+                var status = await Permissions.CheckStatusAsync<T>();
                 if (status != PermissionStatus.Granted)
                 {
-                    if (await CrossPermissions.Current.ShouldShowRequestPermissionRationaleAsync(parameters.Permission))
-                    {
-                        await parameters.PageDialogService.DisplayAlertAsync(parameters.RationaleTitle, parameters.RationaleMessage, BaseResource.Ok);
-                    }
-
-                    status = await CrossPermissions.Current.RequestPermissionAsync<T>();
+                    status = await Permissions.RequestAsync<T>();
                 }
 
                 if (status == PermissionStatus.Granted)
-                {
-                    return true;
-                }
+                    return new PermissionResult(status);
 
-                if (status != PermissionStatus.Unknown)
-                {
-                    await parameters.PageDialogService.DisplayAlertAsync(parameters.ErrorTitle, parameters.ErrorMessage, BaseResource.Ok);
-                }
-            }
-            catch (Exception)
-            {
-                //ignore
-            }
 
-            return false;
-        }
-        [Obsolete("Use PermissionsRequest<T> instead")]
-        public static async Task<bool> PermissionsRequest(PermissionParameters parameters)
-        {
-            try
-            {
-                var status = await CrossPermissions.Current.CheckPermissionStatusAsync(parameters.Permission);
-                if (status != PermissionStatus.Granted)
-                {
-                    if (await CrossPermissions.Current.ShouldShowRequestPermissionRationaleAsync(parameters.Permission))
-                    {
-                        await parameters.PageDialogService.DisplayAlertAsync(parameters.RationaleTitle, parameters.RationaleMessage, BaseResource.Ok);
-                    }
-
-                    var results = await CrossPermissions.Current.RequestPermissionsAsync(parameters.Permission);
-                    //Best practice to always check that the key exists
-                    if (results.ContainsKey(parameters.Permission))
-                        status = results[parameters.Permission];
-                }
-
-                if (status == PermissionStatus.Granted)
-                {
-                    return true;
-                }
-
-                if (status != PermissionStatus.Unknown)
+                if (status != PermissionStatus.Unknown && parameters.ShowError)
                 {
                     await parameters.PageDialogService.DisplayAlertAsync(parameters.ErrorTitle, parameters.ErrorMessage, BaseResource.Ok);
                 }
-            }
-            catch (Exception)
-            {
-                //ignore
-            }
 
-            return false;
+                return new PermissionResult(status);
+            }
+            catch (Exception ex)
+            {
+                return new PermissionResult(ex);
+            }
         }
     }
 }
