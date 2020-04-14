@@ -35,30 +35,6 @@
         <Compile Include="Interfaces\**\*.cs" />
         <Compile Include="Resources\BaseResource.Designer.cs" />
     </ItemGroup>
-
-    <ItemGroup>
-        <Compile Update="Bases\Validation\Resources\XamValidationResources.Designer.cs">
-            <DesignTime>True</DesignTime>
-            <AutoGen>True</AutoGen>
-            <DependentUpon>XamValidationResources.resx</DependentUpon>
-        </Compile>
-        <Compile Update="Resources\BaseResource.Designer.cs">
-            <DesignTime>True</DesignTime>
-            <AutoGen>True</AutoGen>
-            <DependentUpon>BaseResource.resx</DependentUpon>
-        </Compile>
-    </ItemGroup>
-
-    <ItemGroup>
-        <EmbeddedResource Update="Bases\Validation\Resources\XamValidationResources.resx">
-            <Generator>PublicResXFileCodeGenerator</Generator>
-            <LastGenOutput>XamValidationResources.Designer.cs</LastGenOutput>
-        </EmbeddedResource>
-        <EmbeddedResource Update="Resources\BaseResource.resx">
-            <Generator>ResXFileCodeGenerator</Generator>
-            <LastGenOutput>BaseResource.Designer.cs</LastGenOutput>
-        </EmbeddedResource>
-    </ItemGroup>
     
     <ItemGroup>
         <None Update="Resources\BaseResource.Designer.cs">
@@ -109,6 +85,13 @@
         <Compile Include="**\*.watchos.*.cs" />
         <Reference Include="System.Numerics" />
         <Reference Include="System.Numerics.Vectors" />
+    </ItemGroup>
+    <ItemGroup>
+      <None Update="Bases\Validation\Resources\XamValidationResources.Designer.cs">
+        <DesignTime>True</DesignTime>
+        <AutoGen>True</AutoGen>
+        <DependentUpon>XamValidationResources.resx</DependentUpon>
+      </None>
     </ItemGroup>
 
 </Project>
