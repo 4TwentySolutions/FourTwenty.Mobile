@@ -1,1 +1,4 @@
-Added missing StorageService/SecureStorageServices implementations
+Breaking changes: 
+Migrated to Essentials permissions
+Removed validation classes, will be moved to separate project
+Removed BaseTabbedViewModel
