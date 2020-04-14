@@ -6,7 +6,7 @@ using Prism.Navigation;
 namespace XamBasePacket.Bases
 {
 
-    public abstract class ViewModelBase : BindableBase, INavigatedAware, IInitialize, IInitializeAsync
+    public  abstract class ViewModelBase : BindableBase, INavigatedAware, IInitialize, IInitializeAsync
     {
 
 

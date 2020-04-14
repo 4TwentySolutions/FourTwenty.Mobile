@@ -1,3 +1,1 @@
-Added Storage services
-Added IApp interface
-Extended IHttpclientprovider to use Microsoft httpclient facotry
+Added missing StorageService/SecureStorageServices implementations

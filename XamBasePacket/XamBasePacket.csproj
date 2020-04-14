@@ -1,18 +1,17 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="MSBuild.Sdk.Extras/2.0.54">
 
     <PropertyGroup>
-        <TargetFrameworks>netstandard2.0;netstandard2.1</TargetFrameworks>
+        <TargetFrameworks>netstandard2.0;netstandard2.1;Xamarin.iOS10;Xamarin.TVOS10;Xamarin.WatchOS10;MonoAndroid10.0;</TargetFrameworks>
         <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
         <Authors>Anton Yaroshenko</Authors>
         <Company>4Twenty Solutions</Company>
         <RepositoryUrl>https://github.com/4TwentySolutions/FourTwenty.XamarinBase</RepositoryUrl>
         <PackageProjectUrl>https://github.com/4TwentySolutions/FourTwenty.XamarinBase</PackageProjectUrl>
-        <Version>1.1.17-prerelease</Version>
+        <Version>$(packVersion)</Version>
         <PackageReleaseNotes>Fixed AccessDisposed exception when using streams with Api service</PackageReleaseNotes>
-        <AssemblyVersion>1.1.17.0</AssemblyVersion>
-        <FileVersion>1.1.17.0</FileVersion>
         <Product>FourTwenty.XamarinBase</Product>
         <LangVersion>Latest</LangVersion>
+        <EnableDefaultCompileItems>false</EnableDefaultCompileItems>
     </PropertyGroup>
 
     <ItemGroup>
@@ -26,8 +25,16 @@
         <PackageReference Include="Prism.Forms" Version="7.2.0.1422" />
         <PackageReference Include="Refit" Version="5.1.54" />
         <PackageReference Include="Xam.Plugin.Media" Version="5.0.1" />
-        <PackageReference Include="System.ComponentModel.Annotations" Version="4.7.0" />
         <PackageReference Include="Xamarin.Essentials" Version="1.5.2" />
+        <PackageReference Include="Xamarin.Forms" Version="4.5.0.530" />
+        
+        <Compile Include="Bases\Response.cs" />
+        <Compile Include="Bases\ViewModelBase.cs" />
+        <Compile Include="Effects\BaseOptions.cs" />
+        <Compile Include="Effects\GradientBackgroundEffect.cs" />
+        <Compile Include="Exceptions\NoInternetException.cs" />
+        <Compile Include="Interfaces\**\*.cs" />
+        <Compile Include="Resources\BaseResource.Designer.cs" />
     </ItemGroup>
 
     <ItemGroup>
@@ -52,6 +59,57 @@
             <Generator>ResXFileCodeGenerator</Generator>
             <LastGenOutput>BaseResource.Designer.cs</LastGenOutput>
         </EmbeddedResource>
+    </ItemGroup>
+    
+    <ItemGroup>
+        <None Update="Resources\BaseResource.Designer.cs">
+            <DesignTime>True</DesignTime>
+            <AutoGen>True</AutoGen>
+            <DependentUpon>BaseResource.resx</DependentUpon>
+        </None>
+    </ItemGroup>
+    <ItemGroup Condition=" '$(Configuration)'=='Release' And '$(OS)' == 'Windows_NT' ">
+        <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.0.0" PrivateAssets="All" />
+    </ItemGroup>
+    <ItemGroup>
+        <PackageReference Include="Xamarin.Build.TypeRedirector" Version="0.1.2-preview" PrivateAssets="all" />
+        <Compile Include="**\*.shared.cs" />
+        <Compile Include="**\*.shared.*.cs" />
+        <Compile Include="**\*.shared\*.cs" />
+    </ItemGroup>
+    <ItemGroup Condition=" $(TargetFramework.StartsWith('netstandard')) ">
+        <PackageReference Include="System.Numerics.Vectors" Version="4.5.0" />
+        
+        <Compile Include="**\*.netstandard.cs" />
+        <Compile Include="**\*.netstandard.*.cs" />
+        <Compile Include="**\*.netstandard\*.cs" />
+    </ItemGroup>
+    <ItemGroup Condition=" $(TargetFramework.StartsWith('MonoAndroid')) ">
+        <Reference Include="System.Numerics" />
+        <Reference Include="System.Numerics.Vectors" />
+
+        <Compile Include="**\*.android.cs" />
+        <Compile Include="**\*.android.*.cs" />
+    </ItemGroup>
+    <ItemGroup Condition=" $(TargetFramework.StartsWith('Xamarin.iOS')) ">
+        <Compile Include="**\*.ios.cs" />
+        <Compile Include="**\*.ios.*.cs" />
+        <Reference Include="System.Numerics" />
+        <Reference Include="System.Numerics.Vectors" />
+        <Reference Include="OpenTK-1.0" />
+    </ItemGroup>
+    <ItemGroup Condition=" $(TargetFramework.StartsWith('Xamarin.TVOS')) ">
+        <Compile Include="**\*.tvos.cs" />
+        <Compile Include="**\*.tvos.*.cs" />
+        <Reference Include="System.Numerics" />
+        <Reference Include="System.Numerics.Vectors" />
+        <Reference Include="OpenTK-1.0" />
+    </ItemGroup>
+    <ItemGroup Condition=" $(TargetFramework.StartsWith('Xamarin.WatchOS')) ">
+        <Compile Include="**\*.watchos.cs" />
+        <Compile Include="**\*.watchos.*.cs" />
+        <Reference Include="System.Numerics" />
+        <Reference Include="System.Numerics.Vectors" />
     </ItemGroup>
 
 </Project>

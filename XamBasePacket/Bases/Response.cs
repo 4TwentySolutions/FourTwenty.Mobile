@@ -5,7 +5,7 @@ using System.Runtime.Serialization;
 
 namespace XamBasePacket.Bases
 {
-    public interface IResponse
+    public partial interface IResponse
     {
         bool IsSuccess { get; set; }
         string ErrorMessage { get; set; }
@@ -13,13 +13,13 @@ namespace XamBasePacket.Bases
         HttpStatusCode StatusCode { get; set; }
     }
 
-    public interface IResponse<T> : IResponse
+    public partial interface IResponse<T> : IResponse
     {
         T Content { get; set; }
         string RawContent { get; set; }
     }
 
-    public class Response<T> : Response, IResponse<T>
+    public partial class Response<T> : Response, IResponse<T>
     {
         public T Content { get; set; }
         public string RawContent { get; set; }
@@ -40,7 +40,7 @@ namespace XamBasePacket.Bases
 
     }
 
-    public class Response : IResponse
+    public partial class Response : IResponse
     {
         public Response()
         {
