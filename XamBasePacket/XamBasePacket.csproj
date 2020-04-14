@@ -86,12 +86,5 @@
         <Reference Include="System.Numerics" />
         <Reference Include="System.Numerics.Vectors" />
     </ItemGroup>
-    <ItemGroup>
-      <None Update="Bases\Validation\Resources\XamValidationResources.Designer.cs">
-        <DesignTime>True</DesignTime>
-        <AutoGen>True</AutoGen>
-        <DependentUpon>XamValidationResources.resx</DependentUpon>
-      </None>
-    </ItemGroup>
 
 </Project>
