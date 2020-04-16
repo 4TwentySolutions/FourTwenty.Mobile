@@ -182,7 +182,7 @@ namespace XamBasePacket.Effects
             // 3 is radius of final ripple, 
             // instead of 3 you can give required final radius
             //Arrays.fill(outerRadii, 3);
-            Array.Fill(outerRadii, 3);
+            Array.Fill(outerRadii, radius);
 
             RoundRectShape r = new RoundRectShape(outerRadii, null, null);
             ShapeDrawable shapeDrawable = new ShapeDrawable(r);
