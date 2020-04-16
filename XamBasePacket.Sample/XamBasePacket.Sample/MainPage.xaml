@@ -6,34 +6,96 @@
              xmlns:effects="clr-namespace:XamBasePacket.Effects;assembly=XamBasePacket"
              mc:Ignorable="d"
              x:Class="XamBasePacket.Sample.MainPage"
-             Padding="0,50"
              effects:GradientBackground.On="True"
              effects:GradientBackground.FromColor="red"
              effects:GradientBackground.ToColor="Blue">
 
-    <StackLayout>
-        <!-- Place new controls here -->
-        <ContentView effects:GradientBackground.On="True"
+    <ScrollView Padding="25,15">
+        <StackLayout>
+            <!-- Place new controls here -->
+            <ContentView effects:GradientBackground.On="True"
                      effects:GradientBackground.BorderType="Solid"
                      effects:GradientBackground.BorderWidth="2"
                      effects:GradientBackground.BorderColor="Yellow"
                      BackgroundColor="Chocolate">
-            <Label Text="Welcome to Xamarin.Forms!" 
+                <Label Text="Welcome to Xamarin.Forms!" 
                    HorizontalOptions="Center"
                    VerticalOptions="CenterAndExpand"
                    BackgroundColor="AliceBlue"/>
-        </ContentView>
-        
-        <Frame>
-            <StackLayout effects:GradientBackground.On="True" 
-                         effects:GradientBackground.CornerRadius="10"
-                         BackgroundColor="DarkOliveGreen">
-                <Label Text="Line 1"/>
-                <Label Text="Line 2"/>
-                <Label Text="Line 3"/>
-                <Button Text="Button1"/>
-            </StackLayout>
-        </Frame>
-    </StackLayout>
+            </ContentView>
 
+            <Frame>
+                <StackLayout effects:GradientBackground.On="True" 
+                         effects:GradientBackground.CornerRadius="10"
+                         effects:GradientBackground.RippleColor="DeepPink"
+                         BackgroundColor="DarkOliveGreen">
+                    <Label Text="Line 1"/>
+                    <Label Text="Line 2"/>
+                    <Label Text="Line 3"/>
+                    <Button Text="Button1"/>
+                </StackLayout>
+            </Frame>
+
+            <ImageButton Source="icon"
+                     WidthRequest="150"
+                     HeightRequest="150"
+                     VerticalOptions="Center"
+                     HorizontalOptions="Center"
+                     CornerRadius="150"
+                     BackgroundColor="PaleTurquoise"
+                     effects:GradientBackground.On="True"
+                     effects:GradientBackground.RippleColor="Lime"
+                     effects:GradientBackground.CornerRadius="150"/>
+
+            <ImageButton Source="icon"
+                     WidthRequest="150"
+                     HeightRequest="150"
+                     VerticalOptions="Center"
+                     HorizontalOptions="Center"
+                     CornerRadius="150"
+                     effects:GradientBackground.On="True"
+                     effects:GradientBackground.RippleColor="DarkKhaki"
+                     effects:GradientBackground.FromColor="PaleTurquoise"
+                     effects:GradientBackground.ToColor="DarkMagenta"
+                     effects:GradientBackground.BorderWidth="5"
+                     effects:GradientBackground.BorderColor="Green"
+                     effects:GradientBackground.BorderType="Solid"
+                     effects:GradientBackground.GradientOrientation="BrTl"
+                     effects:GradientBackground.CornerRadius="150"/>
+            <Button Text="Test"
+                    BackgroundColor="Gold"
+                    effects:GradientBackground.On="True"
+                    effects:GradientBackground.CornerRadius="15"
+                    effects:GradientBackground.RippleColor="Red"/>
+
+            <Grid BackgroundColor="White"
+                  Padding="20">
+                <Frame HasShadow="True"
+                       Margin="5"
+                       Padding="0"
+                       WidthRequest="152"
+                       CornerRadius="152"
+                       HeightRequest="152"
+                       HorizontalOptions="Center"
+                       BackgroundColor="Aqua">
+                <ImageButton Source="icon"
+                             WidthRequest="150"
+                             HeightRequest="150"
+                             VerticalOptions="Center"
+                             HorizontalOptions="Center"
+                             CornerRadius="150"
+                             effects:GradientBackground.On="True"
+                             effects:GradientBackground.RippleColor="DarkKhaki"
+                             effects:GradientBackground.FromColor="Gray"
+                             effects:GradientBackground.ToColor="DimGray"
+                             effects:GradientBackground.BorderWidth="5"
+                             effects:GradientBackground.BorderColor="Green"
+                             effects:GradientBackground.BorderType="Solid"
+                             effects:GradientBackground.GradientOrientation="LeftRight"
+                             effects:GradientBackground.CornerRadius="150"/>
+                
+        </Frame>
+            </Grid>
+        </StackLayout>
+    </ScrollView>
 </ContentPage>

@@ -170,6 +170,14 @@ namespace XamBasePacket.Effects
                     return (new CGPoint(0, .5), new CGPoint(1, .5));
                 case GradientBackground.Orientation.RightLeft:
                     return (new CGPoint(1, .5), new CGPoint(0, .5));
+                case GradientBackground.Orientation.TlBr:
+                    return (new CGPoint(0, 0), new CGPoint(1, 1));
+                case GradientBackground.Orientation.TrBl:
+                    return (new CGPoint(1, 0), new CGPoint(0, 1));
+                case GradientBackground.Orientation.BlTr:
+                    return (new CGPoint(0, 1), new CGPoint(1, 0));
+                case GradientBackground.Orientation.BrTl:
+                    return (new CGPoint(1, 1), new CGPoint(0, 0));
                 default:
                     return (new CGPoint(), new CGPoint());
             }

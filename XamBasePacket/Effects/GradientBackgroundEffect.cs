@@ -11,7 +11,11 @@ namespace XamBasePacket.Effects
             TopBottom,
             BottomTop,
             LeftRight,
-            RightLeft
+            RightLeft,
+            BlTr,
+            BrTl,
+            TrBl,
+            TlBr
         }
 
         public enum BorderType
@@ -167,6 +171,24 @@ namespace XamBasePacket.Effects
         public static BorderType GetBorderType(BindableObject view)
         {
             return (BorderType)view.GetValue(BorderTypeProperty);
+        }
+
+
+        public static readonly BindableProperty RippleColorProperty =
+            BindableProperty.CreateAttached(
+                "RippleColor",
+                typeof(Color),
+                typeof(GradientBackground),
+                Color.Default);
+
+        public static void SetRippleColor(BindableObject view, Color value)
+        {
+            view.SetValue(RippleColorProperty, value);
+        }
+
+        public static Color GetRippleColor(BindableObject view)
+        {
+            return (Color)view.GetValue(RippleColorProperty);
         }
     }
 

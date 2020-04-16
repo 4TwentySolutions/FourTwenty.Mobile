@@ -1,6 +1,8 @@
 ﻿using System;
 using System.ComponentModel;
+using Android.Content.Res;
 using Android.Graphics.Drawables;
+using Android.Graphics.Drawables.Shapes;
 using Android.OS;
 using AndroidX.Core.View;
 using Xamarin.Forms;
@@ -15,6 +17,7 @@ namespace XamBasePacket.Effects
     {
         private Android.Views.View View => Control ?? Container;
         private Drawable _oldDrawable;
+        private RippleDrawable _ripple;
         private bool _isClippedToBounds;
 
         protected override void OnAttached()
@@ -29,6 +32,8 @@ namespace XamBasePacket.Effects
         {
             if (_oldDrawable != null)
                 ViewCompat.SetBackground(View, _oldDrawable);
+            _ripple?.Dispose();
+            _ripple = null;
             View.ClipToOutline = _isClippedToBounds;
         }
 
@@ -71,12 +76,12 @@ namespace XamBasePacket.Effects
             if (animationDuration.HasValue && View.Background != null)
             {
                 var transitionDrawable = new TransitionDrawable(new[] { View.Background, gd });
-                ViewCompat.SetBackground(View, transitionDrawable);
+                SetBackground(transitionDrawable, (int)radius);
                 transitionDrawable.StartTransition((int)animationDuration.Value.TotalMilliseconds);
             }
             else
             {
-                ViewCompat.SetBackground(View, gd);
+                SetBackground(gd, (int)radius);
             }
         }
 
@@ -107,6 +112,17 @@ namespace XamBasePacket.Effects
         }
 
 
+        private void SetBackground(Drawable drawable, int radius)
+        {
+            var rippleColor = GradientBackground.GetRippleColor(Element);
+            if (rippleColor != Color.Default)
+            {
+                var rippleDrawable = CreateRipple(drawable, rippleColor.ToAndroid(), radius);
+                drawable = new LayerDrawable(new[] { drawable, rippleDrawable });
+            }
+            ViewCompat.SetBackground(View, drawable);
+        }
+
         private GradientDrawable.Orientation ToOrientation(GradientBackground.Orientation orientation)
         {
             switch (orientation)
@@ -119,11 +135,62 @@ namespace XamBasePacket.Effects
                     return GradientDrawable.Orientation.LeftRight;
                 case GradientBackground.Orientation.RightLeft:
                     return GradientDrawable.Orientation.RightLeft;
+                case GradientBackground.Orientation.TlBr:
+                    return GradientDrawable.Orientation.TlBr;
+                case GradientBackground.Orientation.TrBl:
+                    return GradientDrawable.Orientation.TrBl;
+                case GradientBackground.Orientation.BlTr:
+                    return GradientDrawable.Orientation.BlTr;
+                case GradientBackground.Orientation.BrTl:
+                    return GradientDrawable.Orientation.BrTl;
                 default:
                     return GradientDrawable.Orientation.TopBottom;
             }
         }
 
+
+
+        #region Ripple
+
+        private RippleDrawable CreateRipple(Drawable background, Android.Graphics.Color color, int radius)
+        {
+            if (Element is Layout)
+                return _ripple = new RippleDrawable(GetPressedColorSelector(color), null, GetRippleMask(Android.Graphics.Color.White, radius));
+
+            var back = background;
+            if (back == null)
+                return _ripple = new RippleDrawable(GetPressedColorSelector(color), null, GetRippleMask(Android.Graphics.Color.White, radius));
+
+
+            if (back is RippleDrawable drawable)
+            {
+                _ripple = drawable;
+                _ripple.SetColor(GetPressedColorSelector(color));
+                _ripple.Radius = radius;
+                return _ripple;
+            }
+
+            return _ripple = new RippleDrawable(GetPressedColorSelector(color), back, null);
+        }
+
+        static ColorStateList GetPressedColorSelector(Android.Graphics.Color pressedColor) => ColorStateList.ValueOf(pressedColor);
+
+
+        private static Drawable GetRippleMask(Android.Graphics.Color color, int radius)
+        {
+            float[] outerRadii = new float[8];
+            // 3 is radius of final ripple, 
+            // instead of 3 you can give required final radius
+            //Arrays.fill(outerRadii, 3);
+            Array.Fill(outerRadii, 3);
+
+            RoundRectShape r = new RoundRectShape(outerRadii, null, null);
+            ShapeDrawable shapeDrawable = new ShapeDrawable(r);
+            shapeDrawable.Paint.Color = color;
+            return shapeDrawable;
+        }
+
+        #endregion
 
     }
 }
