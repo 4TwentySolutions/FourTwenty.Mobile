@@ -14,6 +14,13 @@ namespace XamBasePacket.Effects
             RightLeft
         }
 
+        public enum BorderType
+        {
+            None,
+            Solid,
+            Dotted
+        }
+        
         public static readonly BindableProperty OnProperty = BaseOptions<GradientBackgroundEffect>.OnProperty;
         public static void SetOn(BindableObject view, bool value) => view.SetValue(OnProperty, value);
         public static bool GetOn(BindableObject view) => (bool)view.GetValue(OnProperty);
@@ -107,6 +114,59 @@ namespace XamBasePacket.Effects
         public static TimeSpan? GetAnimationDuration(BindableObject view)
         {
             return (TimeSpan?)view.GetValue(AnimationDurationProperty);
+        }
+
+
+        public static readonly BindableProperty BorderWidthProperty =
+            BindableProperty.CreateAttached(
+                "BorderWidth",
+                typeof(double),
+                typeof(GradientBackground),
+                default);
+
+        public static void SetBorderWidth(BindableObject view, double value)
+        {
+            view.SetValue(BorderWidthProperty, value);
+        }
+
+        public static double GetBorderWidth(BindableObject view)
+        {
+            return (double)view.GetValue(BorderWidthProperty);
+        }
+
+        public static readonly BindableProperty BorderColorProperty =
+            BindableProperty.CreateAttached(
+                "BorderColor",
+                typeof(Color),
+                typeof(GradientBackground),
+                Color.Default);
+
+        public static void SetBorderColor(BindableObject view, Color value)
+        {
+            view.SetValue(BorderColorProperty, value);
+        }
+
+        public static Color GetBorderColor(BindableObject view)
+        {
+            return (Color)view.GetValue(BorderColorProperty);
+        }
+
+        public static readonly BindableProperty BorderTypeProperty =
+            BindableProperty.CreateAttached(
+                "BorderType",
+                typeof(BorderType),
+                typeof(GradientBackground),
+                BorderType.None
+            );
+
+        public static void SetBorderType(BindableObject view, BorderType value)
+        {
+            view.SetValue(BorderTypeProperty, value);
+        }
+
+        public static BorderType GetBorderType(BindableObject view)
+        {
+            return (BorderType)view.GetValue(BorderTypeProperty);
         }
     }
 

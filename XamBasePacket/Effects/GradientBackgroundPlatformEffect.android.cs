@@ -1,6 +1,7 @@
 ﻿using System;
 using System.ComponentModel;
 using Android.Graphics.Drawables;
+using Android.OS;
 using AndroidX.Core.View;
 using Xamarin.Forms;
 using Xamarin.Forms.Platform.Android;
@@ -37,7 +38,10 @@ namespace XamBasePacket.Effects
                 || args.PropertyName == GradientBackground.CornerRadiusProperty.PropertyName
                 || args.PropertyName == GradientBackground.GradientOrientationProperty.PropertyName
                 || args.PropertyName == GradientBackground.OnProperty.PropertyName
-                || args.PropertyName == GradientBackground.AnimationDurationProperty.PropertyName)
+                || args.PropertyName == GradientBackground.AnimationDurationProperty.PropertyName
+                || args.PropertyName == GradientBackground.BorderColorProperty.PropertyName
+                || args.PropertyName == GradientBackground.BorderTypeProperty.PropertyName
+                || args.PropertyName == GradientBackground.BorderWidthProperty.PropertyName)
                 SetUpBackground();
         }
 
@@ -46,11 +50,19 @@ namespace XamBasePacket.Effects
         {
             Color fromColor = GradientBackground.GetFromColor(Element);
             Color toColor = GradientBackground.GetToColor(Element);
-            var radius = AndroidHelpers.DpToPixels(View.Context,
-                Convert.ToSingle(GradientBackground.GetCornerRadius(Element)));
+            var formsBack = (Element as VisualElement)?.BackgroundColor;
+            if (fromColor == Color.Default
+                && toColor == Color.Default
+                && formsBack.HasValue
+                && formsBack != Color.Default)
+                fromColor = toColor = formsBack.Value;
 
             GradientBackground.Orientation orientation = GradientBackground.GetGradientOrientation(Element);
             GradientDrawable gd = new GradientDrawable(ToOrientation(orientation), new int[] { fromColor.ToAndroid(), toColor.ToAndroid() });
+            SetBorder(gd);
+            var radius = AndroidHelpers.DpToPixels(View.Context,
+                Convert.ToSingle(GradientBackground.GetCornerRadius(Element)));
+
             gd.SetCornerRadius(radius);
             var animationDuration = GradientBackground.GetAnimationDuration(Element);
             if (animationDuration.HasValue && View.Background != null)
@@ -62,6 +74,32 @@ namespace XamBasePacket.Effects
             else
             {
                 ViewCompat.SetBackground(View, gd);
+            }
+        }
+
+        private void SetBorder(GradientDrawable drawable)
+        {
+            var borderType = GradientBackground.GetBorderType(Element);
+            var borderColor = GradientBackground.GetBorderColor(Element);
+            var borderWidth = AndroidHelpers.DpToPixels(View.Context,
+                Convert.ToSingle(GradientBackground.GetBorderWidth(Element)));
+            switch (borderType)
+            {
+                case GradientBackground.BorderType.Solid:
+                    drawable.SetStroke((int)borderWidth, borderColor.ToAndroid());
+                    View.SetPadding((int)borderWidth, (int)borderWidth, (int)borderWidth, (int)borderWidth);
+                    if (Build.VERSION.SdkInt > BuildVersionCodes.Lollipop)
+                        View.ClipToOutline = true; //not to overflow children
+                    break;
+                case GradientBackground.BorderType.Dotted:
+                    drawable.SetStroke((int)borderWidth, borderColor.ToAndroid(), 10, 10);
+                    View.SetPadding((int)borderWidth, (int)borderWidth, (int)borderWidth, (int)borderWidth);
+                    if (Build.VERSION.SdkInt > BuildVersionCodes.Lollipop)
+                        View.ClipToOutline = true; //not to overflow children
+                    break;
+                case GradientBackground.BorderType.None:
+                default:
+                    break;
             }
         }
 
