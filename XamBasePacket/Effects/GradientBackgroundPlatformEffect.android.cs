@@ -15,10 +15,12 @@ namespace XamBasePacket.Effects
     {
         private Android.Views.View View => Control ?? Container;
         private Drawable _oldDrawable;
+        private bool _isClippedToBounds;
 
         protected override void OnAttached()
         {
             _oldDrawable = View.Background;
+            _isClippedToBounds = View.ClipToOutline;
             SetUpBackground();
 
         }
@@ -27,6 +29,7 @@ namespace XamBasePacket.Effects
         {
             if (_oldDrawable != null)
                 ViewCompat.SetBackground(View, _oldDrawable);
+            View.ClipToOutline = _isClippedToBounds;
         }
 
 
