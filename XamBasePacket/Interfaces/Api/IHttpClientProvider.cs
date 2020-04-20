@@ -5,7 +5,7 @@ using Fusillade;
 
 namespace XamBasePacket.Interfaces.Api
 {
-    public interface IHttpClientOptions
+    public interface IHttpClientOptions : IEquatable<IHttpClientOptions>
     {
         string Name { get; set; }
         Uri BaseAddress { get; set; }
