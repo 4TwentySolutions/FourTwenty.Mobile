@@ -89,8 +89,9 @@ namespace XamBasePacket.Services.Api.shared
 
             return Policy
                 .Handle<WebException>()
+                .Or<ApiException>()
                 .Or<HttpRequestException>()
-                .Or<TaskCanceledException>()
+                .Or<OperationCanceledException>()
                 .WaitAndRetryAsync(
                     retryCount: 3,
                     sleepDurationProvider: retryAttempt => TimeSpan.FromSeconds(Math.Pow(2, retryAttempt)));
