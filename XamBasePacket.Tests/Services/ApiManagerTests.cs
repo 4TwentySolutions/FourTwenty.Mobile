@@ -74,5 +74,15 @@ namespace XamBasePacket.Tests.Services
             Assert.IsNotNull(wrongHttp);
             Assert.AreEqual(false, wrongHttp.IsSuccess);
         }
+
+        [TestMethod]
+        public async Task AsyncPolicyTest()
+        {
+            var manager = GetApiManager();
+            var result = await manager.Failure();
+            Assert.IsNotNull(result);
+            Assert.AreEqual(false, result.IsSuccess);
+            Assert.AreEqual(HttpStatusCode.NotFound, result.StatusCode);
+        }
     }
 }

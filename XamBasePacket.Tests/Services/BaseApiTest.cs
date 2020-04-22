@@ -46,6 +46,7 @@ namespace XamBasePacket.Tests.Services
             Task<IResponse<string>> GetRawGoogle();
             Task<IResponse<string>> GetPlaceholderTodos();
             Task<IResponse<string>> GetPlaceholderComments(string baseUrl);
+            Task<IResponse<string>> Failure();
         }
 
         protected class TestApiManager : SimpleApiManager, ITestApiManager
@@ -88,6 +89,12 @@ namespace XamBasePacket.Tests.Services
 
                 return await MakeGenericRequest((ct) =>
                     MakeRequest((innerCt) => _placeholderExtendedApiService.GetApi(new HttpClientOptions(new Uri(baseUrl), null, Priority.UserInitiated)).Comments(innerCt), ct));
+            }
+            public async Task<IResponse<string>> Failure()
+            {
+
+                return await MakeGenericRequest((ct) =>
+                    MakeRequest((innerCt) => _placeholderService.GetApi(Priority.UserInitiated).Failure(innerCt), ct));
             }
         }
         #endregion

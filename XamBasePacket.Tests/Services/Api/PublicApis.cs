@@ -17,5 +17,7 @@ namespace XamBasePacket.Tests.Services.Api
         Task<string> Posts(CancellationToken cancellationToken);
         [Get("/comments")]
         Task<string> Comments(CancellationToken cancellationToken);
+        [Get("/shouldbesomeunknownendpoint")]
+        Task<string> Failure(CancellationToken cancellationToken);
     }
 }
