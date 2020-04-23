@@ -14,6 +14,8 @@ namespace XamBasePacket.Tests.Services
     {
 
         protected ITestApiManager GetApiManager() => new TestApiManager(new GoogleApiService(), new PlaceholderApiService(), new PlaceholderExtendedApiService(new HttpClientProvider()));
+        protected ITestApiManager GetApiManager(HttpClientProvider provider) => new TestApiManager(new GoogleApiService(), new PlaceholderApiService(), new PlaceholderExtendedApiService(provider));
+
 
 
         #region implementation

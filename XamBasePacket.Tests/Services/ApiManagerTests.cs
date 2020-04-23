@@ -1,6 +1,7 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System.Net;
 using System.Threading.Tasks;
+using XamBasePacket.Services.Api;
 
 namespace XamBasePacket.Tests.Services
 {
@@ -83,6 +84,28 @@ namespace XamBasePacket.Tests.Services
             Assert.IsNotNull(result);
             Assert.AreEqual(false, result.IsSuccess);
             Assert.AreEqual(HttpStatusCode.NotFound, result.StatusCode);
+        }
+
+
+        [TestMethod]
+        public async Task DisposingHandlersTest()
+        {
+            using (var provider = new HttpClientProvider())
+            {
+                var manager = GetApiManager(provider);
+                var result = await manager.GetPlaceholderComments("https://jsonplaceholder.typicode.com/");
+                Assert.IsNotNull(result);
+                Assert.AreEqual(true, result.IsSuccess);
+                Assert.AreEqual(HttpStatusCode.OK, result.StatusCode);
+                
+                var resultHttp = await manager.GetPlaceholderComments("http://jsonplaceholder.typicode.com/");
+                Assert.IsNotNull(resultHttp);
+                Assert.AreEqual(true, resultHttp.IsSuccess);
+                Assert.AreEqual(HttpStatusCode.OK, resultHttp.StatusCode);
+                Assert.AreEqual(resultHttp.Content, result.Content);
+
+            }
+
         }
     }
 }
