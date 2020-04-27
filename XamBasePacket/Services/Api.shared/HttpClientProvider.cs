@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Concurrent;
+using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
 using Fusillade;
@@ -56,7 +57,8 @@ namespace XamBasePacket.Services.Api
 
         public HttpClient CreateClient(string name)
         {
-            return GetClient();
+            var options = _clients.Keys.FirstOrDefault(d => d.Name == name) ?? new HttpClientOptions() { Name = name };
+            return GetClient(options);
         }
 
         #region IDisposable
