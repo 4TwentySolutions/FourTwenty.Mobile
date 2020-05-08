@@ -90,22 +90,55 @@ namespace XamBasePacket.Tests.Services
         [TestMethod]
         public async Task DisposingHandlersTest()
         {
+            await MakeDisposableRequest();
+        }
+
+
+        [TestMethod]
+        public async Task DisposingReusageHandlersTest()
+        {
+
+            await MakeDisposableRequest();
+
+            await MakeDisposableRequest();
+        }
+
+        [TestMethod]
+        public async Task DisposingAuthTest()
+        {
+
             using (var provider = new HttpClientProvider())
             {
                 var manager = GetApiManager(provider);
-                var result = await manager.GetPlaceholderComments("https://jsonplaceholder.typicode.com/");
+                var result = await manager.GetPlaceholderCommentsAuth("https://jsonplaceholder.typicode.com/");
                 Assert.IsNotNull(result);
                 Assert.AreEqual(true, result.IsSuccess);
                 Assert.AreEqual(HttpStatusCode.OK, result.StatusCode);
-                
-                var resultHttp = await manager.GetPlaceholderComments("http://jsonplaceholder.typicode.com/");
-                Assert.IsNotNull(resultHttp);
-                Assert.AreEqual(true, resultHttp.IsSuccess);
-                Assert.AreEqual(HttpStatusCode.OK, resultHttp.StatusCode);
-                Assert.AreEqual(resultHttp.Content, result.Content);
 
             }
+            using var provider2 = new HttpClientProvider();
+            var manager2 = GetApiManager(provider2);
+            var result2 = await manager2.GetPlaceholderCommentsAuth("https://jsonplaceholder.typicode.com/");
+            Assert.IsNotNull(result2);
+            Assert.AreEqual(true, result2.IsSuccess);
+            Assert.AreEqual(HttpStatusCode.OK, result2.StatusCode);
 
         }
+        private async Task MakeDisposableRequest()
+        {
+            using var provider = new HttpClientProvider();
+            var manager = GetApiManager(provider);
+            var result = await manager.GetPlaceholderComments("https://jsonplaceholder.typicode.com/");
+            Assert.IsNotNull(result);
+            Assert.AreEqual(true, result.IsSuccess);
+            Assert.AreEqual(HttpStatusCode.OK, result.StatusCode);
+
+            var resultHttp = await manager.GetPlaceholderComments("http://jsonplaceholder.typicode.com/");
+            Assert.IsNotNull(resultHttp);
+            Assert.AreEqual(true, resultHttp.IsSuccess);
+            Assert.AreEqual(HttpStatusCode.OK, resultHttp.StatusCode);
+            Assert.AreEqual(resultHttp.Content, result.Content);
+        }
+
     }
 }

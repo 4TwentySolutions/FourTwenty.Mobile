@@ -19,5 +19,8 @@ namespace XamBasePacket.Tests.Services.Api
         Task<string> Comments(CancellationToken cancellationToken);
         [Get("/shouldbesomeunknownendpoint")]
         Task<string> Failure(CancellationToken cancellationToken);
+        [Get("/comments")]
+        [Headers("Authorization: Bearer")]
+        Task<string> CommentsAuth(CancellationToken cancellationToken);
     }
 }

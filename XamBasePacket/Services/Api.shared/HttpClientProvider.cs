@@ -61,6 +61,24 @@ namespace XamBasePacket.Services.Api
             return GetClient(options);
         }
 
+        protected bool IsShouldDisposeHandler(HttpMessageHandler handler)
+        {
+            if (handler == null)
+                return false;
+
+            bool isNetCache = handler == NetCache.Background
+                   || handler == NetCache.UserInitiated
+                   || handler == NetCache.Speculative
+                   || handler == NetCache.UserInitiated
+                   || handler == NetCache.Offline;
+            if (!isNetCache && handler is DelegatingHandler delegatingHandler)
+                return IsShouldDisposeHandler(delegatingHandler.InnerHandler);
+            return !isNetCache;
+        }
+
+
+
+
         #region IDisposable
         // Public implementation of Dispose pattern callable by consumers.
         public void Dispose()
@@ -78,7 +96,8 @@ namespace XamBasePacket.Services.Api
             {
                 foreach (var client in _clients)
                 {
-                    client.Key?.MessageHandler?.Dispose();
+                    if (IsShouldDisposeHandler(client.Key?.MessageHandler))
+                        client.Key?.MessageHandler?.Dispose();
                     client.Value?.Dispose();
                 }
                 _clients.Clear();
@@ -94,5 +113,7 @@ namespace XamBasePacket.Services.Api
             Dispose(false);
         }
         #endregion
+
+
     }
 }

@@ -48,6 +48,7 @@ namespace XamBasePacket.Tests.Services
             Task<IResponse<string>> GetRawGoogle();
             Task<IResponse<string>> GetPlaceholderTodos();
             Task<IResponse<string>> GetPlaceholderComments(string baseUrl);
+            Task<IResponse<string>> GetPlaceholderCommentsAuth(string baseUrl);
             Task<IResponse<string>> Failure();
         }
 
@@ -91,6 +92,12 @@ namespace XamBasePacket.Tests.Services
 
                 return await MakeGenericRequest((ct) =>
                     MakeRequest((innerCt) => _placeholderExtendedApiService.GetApi(new HttpClientOptions(new Uri(baseUrl), null, Priority.UserInitiated)).Comments(innerCt), ct));
+            }
+            public async Task<IResponse<string>> GetPlaceholderCommentsAuth(string baseUrl)
+            {
+
+                return await MakeGenericRequest((ct) =>
+                    MakeRequest((innerCt) => _placeholderExtendedApiService.GetApi(new HttpClientOptions(new Uri(baseUrl), null, Priority.UserInitiated, message => Task.FromResult("asasasasas"))).Comments(innerCt), ct));
             }
             public async Task<IResponse<string>> Failure()
             {
