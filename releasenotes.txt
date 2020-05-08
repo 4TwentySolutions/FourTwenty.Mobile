@@ -1,1 +1,1 @@
-Added border support for geradient effect
+Fixed HttpClientProvider disposing issue
