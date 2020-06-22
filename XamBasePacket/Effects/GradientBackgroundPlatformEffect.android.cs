@@ -1,5 +1,6 @@
 ﻿using System;
 using System.ComponentModel;
+using System.Threading.Tasks;
 using Android.Content.Res;
 using Android.Graphics.Drawables;
 using Android.Graphics.Drawables.Shapes;
@@ -49,7 +50,8 @@ namespace XamBasePacket.Effects
                 || args.PropertyName == GradientBackground.AnimationDurationProperty.PropertyName
                 || args.PropertyName == GradientBackground.BorderColorProperty.PropertyName
                 || args.PropertyName == GradientBackground.BorderTypeProperty.PropertyName
-                || args.PropertyName == GradientBackground.BorderWidthProperty.PropertyName)
+                || args.PropertyName == GradientBackground.BorderWidthProperty.PropertyName
+                || args.PropertyName == VisualElement.BackgroundColorProperty.PropertyName)
                 SetUpBackground();
         }
 
@@ -68,8 +70,8 @@ namespace XamBasePacket.Effects
             GradientBackground.Orientation orientation = GradientBackground.GetGradientOrientation(Element);
             GradientDrawable gd = new GradientDrawable(ToOrientation(orientation), new int[] { fromColor.ToAndroid(), toColor.ToAndroid() });
             SetBorder(gd);
-            var radius = AndroidHelpers.DpToPixels(View.Context,
-                Convert.ToSingle(GradientBackground.GetCornerRadius(Element)));
+
+            var radius = View.Context.ToPixels(Convert.ToSingle(GradientBackground.GetCornerRadius(Element)));
 
             gd.SetCornerRadius(radius);
             var animationDuration = GradientBackground.GetAnimationDuration(Element);
@@ -112,7 +114,7 @@ namespace XamBasePacket.Effects
         }
 
 
-        private void SetBackground(Drawable drawable, int radius)
+        private async void SetBackground(Drawable drawable, int radius)
         {
             var rippleColor = GradientBackground.GetRippleColor(Element);
             if (rippleColor != Color.Default)
@@ -120,6 +122,8 @@ namespace XamBasePacket.Effects
                 var rippleDrawable = CreateRipple(drawable, rippleColor.ToAndroid(), radius);
                 drawable = new LayerDrawable(new[] { drawable, rippleDrawable });
             }
+
+            await Task.Delay(15);
             ViewCompat.SetBackground(View, drawable);
         }
 
