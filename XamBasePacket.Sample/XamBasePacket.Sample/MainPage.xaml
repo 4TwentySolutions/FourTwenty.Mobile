@@ -96,6 +96,13 @@
                 
         </Frame>
             </Grid>
+            
+            <Label Text="GradientOnLabelTest"
+                   effects:GradientBackground.On="True"
+                   effects:GradientBackground.FromColor="BlueViolet"
+                   effects:GradientBackground.ToColor="Red"
+                   effects:GradientBackground.GradientOrientation="LeftRight"
+                   effects:GradientBackground.CornerRadius="0"/>
         </StackLayout>
     </ScrollView>
 </ContentPage>
