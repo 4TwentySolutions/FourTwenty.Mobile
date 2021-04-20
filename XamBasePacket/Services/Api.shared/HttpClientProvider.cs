@@ -23,10 +23,7 @@ namespace XamBasePacket.Services.Api
             if (options == null)
                 return _clients.GetOrAdd(NullOptions, GetHttpClient);
 
-            if (options.MessageHandler == null)
-                options.MessageHandler = options.AuthTokenFunction != null
-                    ? new AuthenticatedParameterizedHttpClientHandler(options.AuthTokenFunction, GetPriorityHandler(options.Priority))
-                    : GetPriorityHandler(options.Priority);
+            options.MessageHandler ??= GetPriorityHandler(options.Priority);
 
             return _clients.GetOrAdd(options, GetHttpClient);
         }

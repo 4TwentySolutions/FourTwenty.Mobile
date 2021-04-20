@@ -13,11 +13,18 @@ namespace XamBasePacket.Services.Api
     {
         #region fields
         private readonly IHttpClientProvider _clientProvider;
+        private readonly RefitSettings _refitSettings;
         #endregion
 
-        protected ExtendedApiService(IHttpClientProvider clientProvider)
+        protected ExtendedApiService(IHttpClientProvider clientProvider, RefitSettings refitSettings)
         {
             _clientProvider = clientProvider;
+            _refitSettings = refitSettings;
+        }
+
+        protected ExtendedApiService(IHttpClientProvider clientProvider) : this(clientProvider, null)
+        {
+
         }
 
         public T GetApi(IHttpClientOptions options)
@@ -30,23 +37,35 @@ namespace XamBasePacket.Services.Api
             return GetApi(new HttpClientOptions() { Priority = priority });
         }
 
-        protected virtual T CreateClient(IHttpClientOptions options) => RestService.For<T>(_clientProvider.GetClient(options));
+        protected virtual T CreateClient(IHttpClientOptions options) => _refitSettings != null 
+            ? RestService.For<T>(_clientProvider.GetClient(options), _refitSettings)
+            : RestService.For<T>(_clientProvider.GetClient(options));
     }
 
 
     public abstract class ApiService<T> : IApiService<T>
     {
-        private readonly Func<HttpRequestMessage, Task<string>> _getToken;
+        private readonly Func<HttpRequestMessage, Task<string>> _getTokenWithParameters;
+        private readonly Func<Task<string>> _getToken;
         private readonly string _apiUrl;
 
 
-        protected ApiService(string apiBaseAddress) : this(apiBaseAddress, null) { }
+        protected ApiService(string apiBaseAddress)
+        {
+            _apiUrl = apiBaseAddress;
+        }
+
         protected ApiService(string apiBaseAddress, Func<HttpRequestMessage, Task<string>> getToken)
+        {
+            _getTokenWithParameters = getToken;
+            _apiUrl = apiBaseAddress;
+        }
+
+        protected ApiService(string apiBaseAddress, Func<Task<string>> getToken)
         {
             _getToken = getToken;
             _apiUrl = apiBaseAddress;
         }
-
 
         private T Background
         {
@@ -92,14 +111,19 @@ namespace XamBasePacket.Services.Api
 
         protected virtual T CreateClient(HttpMessageHandler messageHandler)
         {
-            if (_getToken != null)
+            if (_getToken != null || _getTokenWithParameters != null)
             {
-                var client = new HttpClient(new AuthenticatedParameterizedHttpClientHandler(_getToken, messageHandler))
+
+                var client = new HttpClient(messageHandler)
                 {
                     BaseAddress = new Uri(_apiUrl)
                 };
 
-                return RestService.For<T>(client);
+                return RestService.For<T>(client, new RefitSettings()
+                {
+                    AuthorizationHeaderValueGetter = _getToken,
+                    AuthorizationHeaderValueWithParamGetter = _getTokenWithParameters
+                });
             }
             else
             {

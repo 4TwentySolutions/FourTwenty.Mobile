@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Concurrent;
 using System.Threading.Tasks;
-using Newtonsoft.Json;
+using System.Text.Json;
 using Xamarin.Essentials;
 using XamBasePacket.Extensions;
 using XamBasePacket.Interfaces.Storage;
@@ -57,7 +57,7 @@ namespace XamBasePacket.Services.Storage
             }
             else
             {
-                Preferences.Set(key, JsonConvert.SerializeObject(value));
+                Preferences.Set(key, JsonSerializer.Serialize(value));
             }
         }
 
@@ -104,7 +104,7 @@ namespace XamBasePacket.Services.Storage
             var result = Preferences.Get(key, null);
             if (result != null)
             {
-                mapped = JsonConvert.DeserializeObject<T>(result);
+                mapped = JsonSerializer.Deserialize<T>(result);
                 _inMemoryCache[key] = mapped;
                 return mapped;
             }

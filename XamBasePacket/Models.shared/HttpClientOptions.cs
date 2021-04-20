@@ -56,8 +56,7 @@ namespace XamBasePacket.Models
                 return false;
             return Name == other.Name
                    && BaseAddress == other.BaseAddress
-                   && MessageHandler == other.MessageHandler
-                   && AuthTokenFunction == other.AuthTokenFunction;
+                   && MessageHandler == other.MessageHandler;
         }
     }
 }

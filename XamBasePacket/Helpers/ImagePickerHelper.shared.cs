@@ -1,17 +1,13 @@
 ﻿using System;
 using System.IO;
 using System.Threading.Tasks;
-using Plugin.Media;
-using Plugin.Media.Abstractions;
+using Xamarin.Essentials;
 
 namespace XamBasePacket.Helpers
 {
+    [Obsolete("User Xamarin Essentials directly")]
     public static class ImagePickerHelper
     {
-        /// <summary>
-        /// Set flag to use GetStreamWithImageRotatedForExternalStorage for fixing image rotation in ios. This issue should be fixed since 4.4.8
-        /// </summary>
-        public static bool UseGetStreamWithImageRotatedForExternalStorage = false;
 
         public class FileItem
         {
@@ -45,7 +41,7 @@ namespace XamBasePacket.Helpers
             return PickPhoto(withData, null);
         }
 
-        public static Task<FileItem> PickPhoto(PickMediaOptions options)
+        public static Task<FileItem> PickPhoto(MediaPickerOptions options)
         {
             return PickPhoto(true, options);
         }
@@ -55,17 +51,11 @@ namespace XamBasePacket.Helpers
         /// <param name="withData">if false data will be null</param>
         /// <param name="options"></param>
         /// <returns>Return path and data in bytes</returns>
-        public static async Task<FileItem> PickPhoto(bool withData, PickMediaOptions options)
+        public static async Task<FileItem> PickPhoto(bool withData, MediaPickerOptions options)
         {
-            await CrossMedia.Current.Initialize();
-
-            if (!CrossMedia.Current.IsPickPhotoSupported)
-            {
-                throw new InvalidOperationException("Photo picking is not supported");
-            }
-
-            var file = await CrossMedia.Current.PickPhotoAsync(options);
-            return HandleMediaFile(file, withData);
+            var file = await
+                MediaPicker.PickPhotoAsync(options);
+            return await HandleMediaFile(file, withData);
         }
 
 
@@ -79,7 +69,7 @@ namespace XamBasePacket.Helpers
             return TakePhoto(withData, null);
         }
 
-        public static Task<FileItem> TakePhoto(StoreCameraMediaOptions options)
+        public static Task<FileItem> TakePhoto(MediaPickerOptions options)
         {
             return TakePhoto(true, options);
         }
@@ -89,17 +79,16 @@ namespace XamBasePacket.Helpers
         /// <param name="withData">if false data will be null</param>
         /// <param name="options"></param>
         /// <returns>Return path and data in bytes</returns>
-        public static async Task<FileItem> TakePhoto(bool withData, StoreCameraMediaOptions options)
+        public static async Task<FileItem> TakePhoto(bool withData, Xamarin.Essentials.MediaPickerOptions options)
         {
-            await CrossMedia.Current.Initialize();
 
-            if (!CrossMedia.Current.IsTakePhotoSupported || !CrossMedia.Current.IsCameraAvailable)
+            if (!MediaPicker.IsCaptureSupported)
             {
                 throw new InvalidOperationException("Photo taking is not supported");
             }
 
-            var file = await CrossMedia.Current.TakePhotoAsync(options ?? new StoreCameraMediaOptions());
-            return HandleMediaFile(file, withData);
+            var file = await MediaPicker.CapturePhotoAsync(options ?? new Xamarin.Essentials.MediaPickerOptions());
+            return await HandleMediaFile(file, withData);
         }
         public static Task<FileItem> TakeVideo()
         {
@@ -111,7 +100,7 @@ namespace XamBasePacket.Helpers
             return TakeVideo(withData, null);
         }
 
-        public static Task<FileItem> TakeVideo(StoreVideoOptions options)
+        public static Task<FileItem> TakeVideo(MediaPickerOptions options)
         {
             return TakeVideo(true, options);
         }
@@ -121,50 +110,40 @@ namespace XamBasePacket.Helpers
         /// <param name="withData">if false data will be null</param>
         /// <param name="options"></param>
         /// <returns>Return path and data in bytes</returns>
-        public static async Task<FileItem> TakeVideo(bool withData, StoreVideoOptions options)
+        public static async Task<FileItem> TakeVideo(bool withData, Xamarin.Essentials.MediaPickerOptions options)
         {
-            await CrossMedia.Current.Initialize();
-
-            if (!CrossMedia.Current.IsTakeVideoSupported || !CrossMedia.Current.IsCameraAvailable)
+            if (!MediaPicker.IsCaptureSupported)
             {
                 throw new InvalidOperationException("Video taking is not supported");
             }
 
-            var file = await CrossMedia.Current.TakeVideoAsync(options ?? new StoreVideoOptions());
-            return HandleMediaFile(file, withData);
+            var file = await MediaPicker.CaptureVideoAsync(options ?? new MediaPickerOptions());
+            return await HandleMediaFile(file, withData);
         }
-        public static Task<FileItem> PickVideo()
+        public static Task<FileItem> PickVideo(MediaPickerOptions options)
         {
-            return PickVideo(true);
+            return PickVideo(true, options);
         }
         /// <summary>
         /// 
         /// </summary>
         /// <param name="withData">if false data will be null</param>
         /// <returns>Return path and data in bytes</returns>
-        public static async Task<FileItem> PickVideo(bool withData)
+        public static async Task<FileItem> PickVideo(bool withData, MediaPickerOptions options)
         {
-            await CrossMedia.Current.Initialize();
-
-            if (!CrossMedia.Current.IsTakeVideoSupported || !CrossMedia.Current.IsCameraAvailable)
-            {
-                throw new InvalidOperationException("Video taking is not supported");
-            }
-
-            var file = await CrossMedia.Current.PickVideoAsync();
-            return HandleMediaFile(file, withData);
+            var file = await MediaPicker.PickVideoAsync(options ?? new MediaPickerOptions());
+            return await HandleMediaFile(file, withData);
         }
 
-        private static FileItem HandleMediaFile(MediaFile file, bool withData)
+        private static async Task<FileItem> HandleMediaFile(FileResult file, bool withData)
         {
             FileItem result = new FileItem();
             if (file == null)
                 return null;
-            result.Url = file.Path;
-            result.FileName = Path.GetFileName(file.Path);
+            result.Url = file.FullPath;
+            result.FileName = Path.GetFileName(file.FullPath);
             if (withData)
-                result.Data = UseGetStreamWithImageRotatedForExternalStorage ? file.GetStreamWithImageRotatedForExternalStorage() : file.GetStream();
-            file.Dispose();
+                result.Data = await file.OpenReadAsync();
             return result;
         }
 

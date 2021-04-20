@@ -11,7 +11,6 @@ namespace XamBasePacket.Interfaces.Api
         Uri BaseAddress { get; set; }
         HttpMessageHandler MessageHandler { get; set; }
         Priority Priority { get; set; }
-        Func<HttpRequestMessage, Task<string>> AuthTokenFunction { get; set; }
     }
 
     public interface IHttpClientProvider : IHttpClientFactory
