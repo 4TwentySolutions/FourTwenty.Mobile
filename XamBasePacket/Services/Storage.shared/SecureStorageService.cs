@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Collections.Concurrent;
 using System.Threading.Tasks;
-using Newtonsoft.Json;
 using Xamarin.Essentials;
 using XamBasePacket.Extensions;
 using XamBasePacket.Interfaces.Storage;
+using System.Text.Json;
 
 namespace XamBasePacket.Services.Storage
 {
@@ -24,7 +24,7 @@ namespace XamBasePacket.Services.Storage
                 return;
             }
             _inMemoryCache[key] = value;
-            await SecureStorage.SetAsync(key, typeof(T).IsSimpleType() ? value.ToString() : JsonConvert.SerializeObject(value));
+            await SecureStorage.SetAsync(key, typeof(T).IsSimpleType() ? value.ToString() : JsonSerializer.Serialize(value));
         }
 
         public async Task<T> GetAsync<T>(string key, T defaultValue = default)
@@ -44,7 +44,7 @@ namespace XamBasePacket.Services.Storage
                 return mapped;
             }
 
-            mapped = JsonConvert.DeserializeObject<T>(result);
+            mapped = JsonSerializer.Deserialize<T>(result);
             if (mapped != null)
             {
                 _inMemoryCache[key] = mapped;

@@ -1,1 +1,1 @@
-Added missing StorageService/SecureStorageServices implementations
+Fixed HttpClientProvider disposing issue

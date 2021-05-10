@@ -18,9 +18,8 @@ namespace XamBasePacket.Effects
 
         private static void OnOffChanged(BindableObject bindable, object oldValue, object newValue)
         {
-            if (!(bindable is View view))
+            if (!(bindable is VisualElement view))
                 return;
-
 
             if ((bool)newValue)
             {

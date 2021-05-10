@@ -1,6 +1,7 @@
-﻿using System.Collections.Concurrent;
+﻿using System;
+using System.Collections.Concurrent;
+using System.Linq;
 using System.Net.Http;
-using System.Net.Http.Headers;
 using System.Threading.Tasks;
 using Fusillade;
 using Refit;
@@ -9,9 +10,11 @@ using XamBasePacket.Models;
 
 namespace XamBasePacket.Services.Api
 {
-    public class HttpClientProvider : IHttpClientProvider
+    public class HttpClientProvider : IHttpClientProvider, IDisposable
     {
-        private readonly ConcurrentDictionary<IHttpClientOptions, HttpClient> _clients = new ConcurrentDictionary<IHttpClientOptions, HttpClient>();
+        private bool _disposed;
+
+        private ConcurrentDictionary<IHttpClientOptions, HttpClient> _clients = new ConcurrentDictionary<IHttpClientOptions, HttpClient>();
 
         private static readonly IHttpClientOptions NullOptions = new HttpClientOptions() { };
 
@@ -20,20 +23,17 @@ namespace XamBasePacket.Services.Api
             if (options == null)
                 return _clients.GetOrAdd(NullOptions, GetHttpClient);
 
-            if (options.MessageHandler == null)
-                options.MessageHandler = options.AuthTokenFunction != null
-                    ? new AuthenticatedParameterizedHttpClientHandler(options.AuthTokenFunction, GetPriorityHandler(options.Priority))
-                    : GetPriorityHandler(options.Priority);
+            options.MessageHandler ??= GetPriorityHandler(options.Priority);
 
             return _clients.GetOrAdd(options, GetHttpClient);
         }
 
         protected virtual HttpClient GetHttpClient(IHttpClientOptions clientOptions)
         {
-            if (clientOptions == NullOptions)
-                return new HttpClient(GetPriorityHandler(Priority.UserInitiated));
+            if (clientOptions.Equals(NullOptions))
+                return new HttpClient(GetPriorityHandler(Priority.UserInitiated), false);
 
-            var client = new HttpClient(clientOptions.MessageHandler);
+            var client = new HttpClient(clientOptions.MessageHandler, false);
             if (clientOptions.BaseAddress != null)
                 client.BaseAddress = clientOptions.BaseAddress;
             return client;
@@ -54,7 +54,63 @@ namespace XamBasePacket.Services.Api
 
         public HttpClient CreateClient(string name)
         {
-            return GetClient();
+            var options = _clients.Keys.FirstOrDefault(d => d.Name == name) ?? new HttpClientOptions() { Name = name };
+            return GetClient(options);
         }
+
+        protected bool IsShouldDisposeHandler(HttpMessageHandler handler)
+        {
+            if (handler == null)
+                return false;
+
+            bool isNetCache = handler == NetCache.Background
+                   || handler == NetCache.UserInitiated
+                   || handler == NetCache.Speculative
+                   || handler == NetCache.UserInitiated
+                   || handler == NetCache.Offline;
+            if (!isNetCache && handler is DelegatingHandler delegatingHandler)
+                return IsShouldDisposeHandler(delegatingHandler.InnerHandler);
+            return !isNetCache;
+        }
+
+
+
+
+        #region IDisposable
+        // Public implementation of Dispose pattern callable by consumers.
+        public void Dispose()
+        {
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
+        // Protected implementation of Dispose pattern.
+        protected virtual void Dispose(bool disposing)
+        {
+            if (_disposed)
+                return;
+            if (disposing)
+            {
+                foreach (var client in _clients)
+                {
+                    if (IsShouldDisposeHandler(client.Key?.MessageHandler))
+                        client.Key?.MessageHandler?.Dispose();
+                    client.Value?.Dispose();
+                }
+                _clients.Clear();
+                _clients = null;
+            }
+            // Free any unmanaged objects here.            
+            _disposed = true;
+
+        }
+
+        ~HttpClientProvider()
+        {
+            Dispose(false);
+        }
+        #endregion
+
+
     }
 }

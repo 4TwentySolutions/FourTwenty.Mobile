@@ -1,0 +1,48 @@
+trigger:
+  batch: true
+  branches:
+    include:
+      - master
+
+pool:
+  vmImage: macos-latest
+
+name: $(packVersion)-pre$(Rev:r)
+
+variables:
+  - group: "Shared"
+  - name: "buildConfiguration"
+    value: "release"
+  - name: "PathToMsBuildOnMacOS"
+    value: 'mono /Applications/Visual\ studio.app/Contents/Resources/lib/monodevelop/bin/MSBuild/Current/bin/MSBuild.dll'
+  - name: "PathToXamBaseCsproj"
+    value: "XamBasePacket/XamBasePacket.csproj"
+
+  
+steps:
+  - script: "$(PathToMsBuildOnMacOS) $(PathToXamBaseCsproj) /p:Configuration=$(buildConfiguration) /restore /t:Build /p:ContinuousIntegrationBuild=true /p:Deterministic=false /p:VersionNumber=$(packVersion) /p:Version=$(packVersion)"
+    displayName: Build project  
+  - script: echo "##vso[task.setvariable variable=ReleaseNotes]$(cat 'releasenotes.txt')"
+    displayName: "Create release notes from file"
+  - task: NuGetToolInstaller@1
+    displayName: 'Install latest Nugget'
+    inputs:
+      versionSpec: 5.x
+  - task: NuGetCommand@2
+    displayName: 'NuGet pre-release pack'
+    inputs:
+      command: pack
+      packagesToPack: package.nuspec
+      versioningScheme: byEnvVar
+      versionEnvVar: 'BUILD_BUILDNUMBER'
+      buildProperties: 'branch=$(Build.SourceBranchName);notes=$(ReleaseNotes)'
+  - task: NuGetCommand@2
+    displayName: 'NuGet release pack'
+    inputs:
+      command: pack
+      packagesToPack: package.nuspec
+      versioningScheme: byEnvVar
+      versionEnvVar: packVersion
+      buildProperties: 'branch=$(Build.SourceBranchName);notes=$(ReleaseNotes)'
+  - task: PublishBuildArtifacts@1
+    displayName: 'Publish Artifact: drop'

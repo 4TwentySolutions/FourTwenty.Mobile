@@ -5,13 +5,12 @@ using Fusillade;
 
 namespace XamBasePacket.Interfaces.Api
 {
-    public interface IHttpClientOptions
+    public interface IHttpClientOptions : IEquatable<IHttpClientOptions>
     {
         string Name { get; set; }
         Uri BaseAddress { get; set; }
         HttpMessageHandler MessageHandler { get; set; }
         Priority Priority { get; set; }
-        Func<HttpRequestMessage, Task<string>> AuthTokenFunction { get; set; }
     }
 
     public interface IHttpClientProvider : IHttpClientFactory

@@ -17,6 +17,7 @@ namespace XamBasePacket.Helpers
     {
         public static List<ResponseStatusRule> ResponseStatusRules { get; } = new List<ResponseStatusRule>();
 
+        public static bool ShouldUseUnauthorizedApiCall { get; set; } = false;
 
         public static async Task<T> WrapApiTaskDefault<T>(this Task<T> task, ViewModelBase viewModel, bool displayError = true) where T : class, IResponse
         {
@@ -66,6 +67,7 @@ namespace XamBasePacket.Helpers
                 viewModel.IsBusy = false;
             }
         }
+
         public static async Task WrapWithExceptionHandling(this Task task, ViewModelBase viewModel, bool displayError = true)
         {
             try
@@ -107,13 +109,13 @@ namespace XamBasePacket.Helpers
             }
             else
             {
-                if (response.StatusCode == HttpStatusCode.Unauthorized)
+                if (ShouldUseUnauthorizedApiCall && response.StatusCode == HttpStatusCode.Unauthorized)
                 {
                     viewModel.UnauthorizedApiCall();
                     return response;
                 }
             }
-            viewModel.DisplayError(null, response.ErrorMessage, displayError);
+            viewModel.DisplayError(response.Error, response.ErrorMessage, displayError);
             return response;
         }
 
