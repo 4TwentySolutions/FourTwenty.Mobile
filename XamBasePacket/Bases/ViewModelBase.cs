@@ -9,7 +9,6 @@ namespace XamBasePacket.Bases
     public abstract class ViewModelBase : BindableBase, INavigatedAware, IInitialize, IInitializeAsync
     {
 
-
         #region properties
         private bool _isBusy;
         public virtual bool IsBusy
@@ -62,6 +61,10 @@ namespace XamBasePacket.Bases
 
 
         #region protected
+
+        public virtual void ShowLoader() => IsBusy = true;
+        public virtual void HideLoader() => IsBusy = false;
+
         protected virtual void OnIsBusyChanged()
         {
 
@@ -77,6 +80,5 @@ namespace XamBasePacket.Bases
 
 
         #endregion
-
     }
 }

@@ -17,7 +17,145 @@ namespace XamBasePacket.Helpers
     {
         public static List<ResponseStatusRule> ResponseStatusRules { get; } = new List<ResponseStatusRule>();
 
-        public static bool ShouldUseUnauthorizedApiCall { get; set; } = false;
+        #region Func helpers
+        public static async Task<T> WrapApiTaskDefault<T>(this Func<Task<T>> task, ViewModelBase viewModel, bool displayError = true) where T : class, IResponse
+        {
+            try
+            {
+                viewModel.ShowLoader();
+                T response = await task.Invoke();
+                if (response == null)
+                    return null;
+                if (response.IsSuccess)
+                    return response;
+                return HandleErrors(response, viewModel, displayError);
+            }
+            catch (Exception e)
+            {
+                viewModel.DisplayError(e, null, displayError);
+                return default;
+            }
+            finally
+            {
+                viewModel.HideLoader();
+            }
+
+        }
+
+        public static async Task<T> WrapTaskWithApiResponse<T>(this Func<Task<T>> task, ViewModelBase viewModel, bool displayApiError = true) where T : class, IResponse
+        {
+            T response = await task.Invoke();
+            if (response == null)
+                return null;
+            if (response.IsSuccess)
+                return response;
+            return HandleErrors(response, viewModel, displayApiError);
+        }
+
+
+        public static async Task WrapTaskDefault(this Func<Task> task, ViewModelBase viewModel, bool displayError = true)
+        {
+            try
+            {
+                viewModel.ShowLoader();
+                await task.Invoke();
+            }
+            catch (Exception e)
+            {
+                viewModel.DisplayError(e, null, displayError);
+            }
+            finally
+            {
+                viewModel.HideLoader();
+            }
+
+        }
+        public static async Task<T> WrapTaskDefault<T>(this Func<Task<T>> task, ViewModelBase viewModel, bool displayError = true)
+        {
+            try
+            {
+                viewModel.ShowLoader();
+                return await task.Invoke();
+            }
+            catch (Exception e)
+            {
+                viewModel.DisplayError(e, null, displayError);
+            }
+            finally
+            {
+                viewModel.HideLoader();
+            }
+
+            return default;
+        }
+
+
+        public static async Task<T> WrapTaskWithLoading<T>(this Func<Task<T>> task, ViewModelBase viewModel)
+        {
+            try
+            {
+                viewModel.ShowLoader();
+                return await task.Invoke();
+            }
+            finally
+            {
+                viewModel.HideLoader();
+            }
+        }
+
+        public static async Task WrapTaskWithLoading(this Func<Task> task, ViewModelBase viewModel)
+        {
+            try
+            {
+                viewModel.ShowLoader();
+                await task.Invoke();
+            }
+            finally
+            {
+                viewModel.HideLoader();
+            }
+        }
+
+        public static async Task WrapWithExceptionHandling(this Func<Task> task, ViewModelBase viewModel, bool displayError = true)
+        {
+            try
+            {
+                await task.Invoke();
+            }
+            catch (OperationCanceledException)
+            {
+                // do nothing, this is an expected behaviour
+            }
+            catch (Exception e)
+            {
+                viewModel.DisplayError(e, null, displayError);
+            }
+        }
+        public static async Task<T> WrapWithExceptionHandling<T>(this Func<Task<T>> task, ViewModelBase viewModel, bool displayError = true)
+        {
+            try
+            {
+                return await task.Invoke();
+            }
+            catch (OperationCanceledException)
+            {
+                // do nothing, this is an expected behaviour
+            }
+            catch (Exception e)
+            {
+                viewModel.DisplayError(e, null, displayError);
+            }
+            return default;
+        }
+
+        #endregion
+
+
+
+        public static async Task WrapTaskDefault(this Task task, ViewModelBase viewModel, bool displayError = true)
+        {
+            await task.WrapTaskWithLoading(viewModel).WrapWithExceptionHandling(viewModel, displayError);
+        }
 
         public static async Task<T> WrapApiTaskDefault<T>(this Task<T> task, ViewModelBase viewModel, bool displayError = true) where T : class, IResponse
         {
@@ -27,10 +165,7 @@ namespace XamBasePacket.Helpers
         {
             return await task.WrapTaskWithLoading(viewModel).WrapWithExceptionHandling(viewModel, displayError);
         }
-        public static async Task WrapTaskDefault(this Task task, ViewModelBase viewModel, bool displayError = true)
-        {
-            await task.WrapTaskWithLoading(viewModel).WrapWithExceptionHandling(viewModel, displayError);
-        }
+
 
         public static async Task<T> WrapTaskWithApiResponse<T>(this Task<T> task, ViewModelBase viewModel, bool displayApiError = true) where T : class, IResponse
         {
@@ -39,19 +174,19 @@ namespace XamBasePacket.Helpers
                 return null;
             if (response.IsSuccess)
                 return response;
-            return HandleErrors(response, ref viewModel, displayApiError);
+            return HandleErrors(response, viewModel, displayApiError);
         }
 
         public static async Task<T> WrapTaskWithLoading<T>(this Task<T> task, ViewModelBase viewModel)
         {
             try
             {
-                viewModel.IsBusy = true;
+                viewModel.ShowLoader();
                 return await task;
             }
             finally
             {
-                viewModel.IsBusy = false;
+                viewModel.HideLoader();
             }
         }
 
@@ -59,12 +194,12 @@ namespace XamBasePacket.Helpers
         {
             try
             {
-                viewModel.IsBusy = true;
+                viewModel.ShowLoader();
                 await task;
             }
             finally
             {
-                viewModel.IsBusy = false;
+                viewModel.HideLoader();
             }
         }
 
@@ -100,20 +235,12 @@ namespace XamBasePacket.Helpers
             return default;
         }
 
-        private static T HandleErrors<T>(T response, ref ViewModelBase viewModel, bool displayError = true) where T : IResponse
+        private static T HandleErrors<T>(T response, ViewModelBase viewModel, bool displayError = true) where T : IResponse
         {
             if (ResponseStatusRules.Any(x => x.Code == response.StatusCode))
             {
                 ResponseStatusRules.Find(rule => rule.Code == response.StatusCode)?.RuleExecution
                     ?.Invoke(response, viewModel);
-            }
-            else
-            {
-                if (ShouldUseUnauthorizedApiCall && response.StatusCode == HttpStatusCode.Unauthorized)
-                {
-                    viewModel.UnauthorizedApiCall();
-                    return response;
-                }
             }
             viewModel.DisplayError(response.Error, response.ErrorMessage, displayError);
             return response;
