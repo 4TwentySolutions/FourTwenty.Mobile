@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Concurrent;
 using System.Net.Http;
 using System.Threading.Tasks;
 using Fusillade;
@@ -14,6 +15,9 @@ namespace XamBasePacket.Services.Api
         #region fields
         private readonly IHttpClientProvider _clientProvider;
         private readonly RefitSettings _refitSettings;
+
+        private readonly ConcurrentDictionary<IHttpClientOptions, T> _createdApis =
+            new ConcurrentDictionary<IHttpClientOptions, T>();
         #endregion
 
         protected ExtendedApiService(IHttpClientProvider clientProvider, RefitSettings refitSettings)
@@ -37,9 +41,11 @@ namespace XamBasePacket.Services.Api
             return GetApi(new HttpClientOptions() { Priority = priority });
         }
 
-        protected virtual T CreateClient(IHttpClientOptions options) => _refitSettings != null 
-            ? RestService.For<T>(_clientProvider.GetClient(options), _refitSettings)
-            : RestService.For<T>(_clientProvider.GetClient(options));
+        protected virtual T CreateClient(IHttpClientOptions options) =>
+         _createdApis.GetOrAdd(options, _refitSettings != null
+                ? RestService.For<T>(_clientProvider.GetClient(options), _refitSettings)
+                : RestService.For<T>(_clientProvider.GetClient(options)));
+
     }
 
 

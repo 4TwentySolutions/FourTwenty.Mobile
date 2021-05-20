@@ -4,7 +4,6 @@ using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
 using Fusillade;
-using Refit;
 using XamBasePacket.Interfaces.Api;
 using XamBasePacket.Models;
 

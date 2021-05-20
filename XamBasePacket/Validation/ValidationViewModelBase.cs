@@ -12,7 +12,6 @@ namespace XamBasePacket.Validation
     public abstract class ValidationViewModelBase : ViewModelBase
     {
         public Dictionary<string, List<string>> Errors { get; } = new Dictionary<string, List<string>>();
-        protected bool DisplayOnlyFirstError { get; set; }
 
         protected bool IsModelValid()
         {
@@ -34,16 +33,7 @@ namespace XamBasePacket.Validation
                 }
 
                 if (!result && displayErrors)
-                {
-                    if (DisplayOnlyFirstError)
-                    {
-                        DisplayFirstValidationError();
-                    }
-                    else
-                    {
-                        DisplayValidationErrors();
-                    }
-                }
+                    DisplayValidationErrors();
 
             }
             catch (Exception ex)
@@ -77,76 +67,65 @@ namespace XamBasePacket.Validation
             {
                 var val = property.GetValue(childItem ?? this, null);
                 bool isValid = attribute.IsValid(val);
-                if (!isValid)
+                if (isValid) continue;
+                result = false;
+                if (Errors.ContainsKey(property.Name))
                 {
-                    result = isValid;
-                    if (Errors.ContainsKey(property.Name))
-                    {
-                        if (Errors[property.Name] == null)
-                        {
-                            if (attribute.ErrorMessageResourceType != null && !string.IsNullOrEmpty(attribute.ErrorMessageResourceName) && !string.IsNullOrEmpty(attribute.ErrorMessageResourceType.FullName))
-                            {
-                                ResourceManager resourceManager = new ResourceManager(attribute.ErrorMessageResourceType.FullName, attribute.ErrorMessageResourceType.GetTypeInfo().Assembly);
-                                var res = resourceManager.GetString(attribute.ErrorMessageResourceName, Thread.CurrentThread.CurrentUICulture);
-                                Errors[property.Name] = new List<string> { res };
-                            }
-                            else
-                            {
-
-                                Errors[property.Name] = new List<string> { attribute.ErrorMessage };
-                            }
-                        }
-                        else
-                        {
-                            if (attribute.ErrorMessageResourceType != null &&
-                                !string.IsNullOrEmpty(attribute.ErrorMessageResourceName) &&
-                                !string.IsNullOrEmpty(attribute.ErrorMessageResourceType.FullName))
-                            {
-                                ResourceManager resourceManager = new ResourceManager(attribute.ErrorMessageResourceType.FullName, attribute.ErrorMessageResourceType.GetTypeInfo().Assembly);
-                                var res = resourceManager.GetString(attribute.ErrorMessageResourceName, Thread.CurrentThread.CurrentUICulture);
-                                Errors[property.Name].Add(string.Format(res));
-                            }
-                            else
-                            {
-
-                                Errors[property.Name].Add(string.Format(attribute.ErrorMessage));
-                            }
-
-                        }
-                    }
-                    else
+                    if (Errors[property.Name] == null)
                     {
                         if (attribute.ErrorMessageResourceType != null && !string.IsNullOrEmpty(attribute.ErrorMessageResourceName) && !string.IsNullOrEmpty(attribute.ErrorMessageResourceType.FullName))
                         {
                             ResourceManager resourceManager = new ResourceManager(attribute.ErrorMessageResourceType.FullName, attribute.ErrorMessageResourceType.GetTypeInfo().Assembly);
                             var res = resourceManager.GetString(attribute.ErrorMessageResourceName, Thread.CurrentThread.CurrentUICulture);
-                            Errors.Add(property.Name, new List<string> { res });
+                            Errors[property.Name] = new List<string> { res };
                         }
                         else
                         {
-                            Errors.Add(property.Name, new List<string> { attribute.ErrorMessage });
+
+                            Errors[property.Name] = new List<string> { attribute.ErrorMessage };
+                        }
+                    }
+                    else
+                    {
+                        if (attribute.ErrorMessageResourceType != null &&
+                            !string.IsNullOrEmpty(attribute.ErrorMessageResourceName) &&
+                            !string.IsNullOrEmpty(attribute.ErrorMessageResourceType.FullName))
+                        {
+                            ResourceManager resourceManager = new ResourceManager(attribute.ErrorMessageResourceType.FullName, attribute.ErrorMessageResourceType.GetTypeInfo().Assembly);
+                            var res = resourceManager.GetString(attribute.ErrorMessageResourceName, Thread.CurrentThread.CurrentUICulture);
+                            Errors[property.Name].Add(string.Format(res));
+                        }
+                        else
+                        {
+
+                            Errors[property.Name].Add(string.Format(attribute.ErrorMessage));
                         }
 
                     }
+                }
+                else
+                {
+                    if (attribute.ErrorMessageResourceType != null && !string.IsNullOrEmpty(attribute.ErrorMessageResourceName) && !string.IsNullOrEmpty(attribute.ErrorMessageResourceType.FullName))
+                    {
+                        ResourceManager resourceManager = new ResourceManager(attribute.ErrorMessageResourceType.FullName, attribute.ErrorMessageResourceType.GetTypeInfo().Assembly);
+                        var res = resourceManager.GetString(attribute.ErrorMessageResourceName, Thread.CurrentThread.CurrentUICulture);
+                        Errors.Add(property.Name, new List<string> { res });
+                    }
+                    else
+                    {
+                        Errors.Add(property.Name, new List<string> { attribute.ErrorMessage });
+                    }
+
                 }
 
             }
         }
 
 
-        protected virtual void DisplayFirstValidationError()
-        {
-            if (Errors.Any())
-            {
-                ErrorText = Errors.First().Value?.FirstOrDefault();
-            }
-        }
         protected virtual void DisplayValidationErrors()
         {
             if (Errors.Any())
-            {
                 ErrorText = string.Join("\n", Errors.SelectMany(x => x.Value).Select(x => x));
-            }
         }
 
         protected override void ClearErrors()
