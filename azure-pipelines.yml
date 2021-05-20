@@ -51,9 +51,9 @@ steps:
     displayName: 'Publish Artifact: drop'
     inputs:
       ArtifactName: drop
-      TargetPath: '$(Build.ArtifactStagingDirectory)/pre'
+      PathtoPublish: '$(Build.ArtifactStagingDirectory)/pre'
   - task: PublishBuildArtifacts@1
     displayName: 'Publish Artifact: releasedrop'
     inputs:
       ArtifactName: releasedrop
-      TargetPath: '$(Build.ArtifactStagingDirectory)/release'
+      PathtoPublish: '$(Build.ArtifactStagingDirectory)/release'
