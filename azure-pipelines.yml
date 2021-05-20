@@ -3,6 +3,7 @@ trigger:
   branches:
     include:
       - master
+      - develop
 
 pool:
   vmImage: macos-latest
@@ -36,6 +37,7 @@ steps:
       versioningScheme: byEnvVar
       versionEnvVar: 'BUILD_BUILDNUMBER'
       buildProperties: 'branch=$(Build.SourceBranchName);notes=$(ReleaseNotes)'
+      packDestination: '$(Build.ArtifactStagingDirectory)/pre'
   - task: NuGetCommand@2
     displayName: 'NuGet release pack'
     inputs:
@@ -44,5 +46,14 @@ steps:
       versioningScheme: byEnvVar
       versionEnvVar: packVersion
       buildProperties: 'branch=$(Build.SourceBranchName);notes=$(ReleaseNotes)'
+      packDestination: '$(Build.ArtifactStagingDirectory)/release'
   - task: PublishBuildArtifacts@1
     displayName: 'Publish Artifact: drop'
+    inputs:
+      ArtifactName: drop
+      TargetPath: '$(Build.ArtifactStagingDirectory)/pre'
+  - task: PublishBuildArtifacts@1
+    displayName: 'Publish Artifact: releasedrop'
+    inputs:
+      ArtifactName: releasedrop
+      TargetPath: '$(Build.ArtifactStagingDirectory)/release'
