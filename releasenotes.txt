@@ -1,1 +1,1 @@
-Fixed HttpClientProvider disposing issue
+Nuget package references fixes

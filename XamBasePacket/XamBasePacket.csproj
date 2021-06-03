@@ -3,12 +3,18 @@
     <PropertyGroup>
         <TargetFrameworks>netstandard2.0;netstandard2.1;Xamarin.iOS10;Xamarin.TVOS10;Xamarin.WatchOS10;MonoAndroid10.0;</TargetFrameworks>
         <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-        <Authors>Anton Yaroshenko</Authors>
+        <Authors>Anton Yaroshenko, Pavel Kurianov, 4Twenty Solutions</Authors>
         <Company>4Twenty Solutions</Company>
         <RepositoryUrl>https://github.com/4TwentySolutions/FourTwenty.XamarinBase</RepositoryUrl>
         <PackageProjectUrl>https://github.com/4TwentySolutions/FourTwenty.XamarinBase</PackageProjectUrl>
+        <PackageIconUrl>https://github.com/4TwentySolutions/FourTwenty.XamarinBase/raw/master/logo_small.png</PackageIconUrl>
         <Version>$(packVersion)</Version>
+        <Description>Includes all needed classes models and libs to start developing Xamarin application.</Description>
         <PackageReleaseNotes>Fixed AccessDisposed exception when using streams with Api service</PackageReleaseNotes>
+        <PackageTags>xamarin forms, prism, mvvm</PackageTags>
+        <PackageId>XamBasePacket</PackageId>
+        <PackageLicenseExpression>MIT</PackageLicenseExpression>
+        <Title>FourTwenty.XamarinBase</Title>
         <Product>FourTwenty.XamarinBase</Product>
         <LangVersion>Latest</LangVersion>
         <EnableDefaultCompileItems>false</EnableDefaultCompileItems>
