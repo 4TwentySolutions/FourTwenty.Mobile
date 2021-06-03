@@ -25,19 +25,15 @@ steps:
     displayName: Build project  
   - script: echo "##vso[task.setvariable variable=ReleaseNotes]$(cat 'releasenotes.txt')"
     displayName: "Create release notes from file"
-  # - script: dotnet pack $(PathToXamBaseCsproj) -c $(buildConfiguration) -o $(Build.ArtifactStagingDirectory)/pre --no-build --no-restore /p:VersionNumber=$(Build.BuildNumber) /p:Version=$(Build.BuildNumber) /p:PackageReleaseNotes="$(ReleaseNotes)"
-  #   displayName: NuGet pre-release pack
-  # - script: dotnet pack $(PathToXamBaseCsproj) -c $(buildConfiguration) -o $(Build.ArtifactStagingDirectory)/release --no-build --no-restore /p:VersionNumber=$(packVersion) /p:Version=$(packVersion) /p:PackageReleaseNotes="$(ReleaseNotes)"
-  #   displayName: NuGet release pack
   - task: NuGetToolInstaller@1
-    displayName: 'Install latest Nugget'
+    displayName: 'Install latest Nuget'
     inputs:
       versionSpec: 5.x
   - task: NuGetCommand@2
     displayName: 'NuGet pre-release pack'
     inputs:
       command: pack
-      packagesToPack: $(PathToXamBaseCsproj)
+      packagesToPack: package.nuspec
       versioningScheme: byEnvVar
       versionEnvVar: 'BUILD_BUILDNUMBER'
       buildProperties: 'branch=$(Build.SourceBranchName);notes=$(ReleaseNotes)'
@@ -46,7 +42,7 @@ steps:
     displayName: 'NuGet release pack'
     inputs:
       command: pack
-      packagesToPack: $(PathToXamBaseCsproj)
+      packagesToPack: package.nuspec
       versioningScheme: byEnvVar
       versionEnvVar: packVersion
       buildProperties: 'branch=$(Build.SourceBranchName);notes=$(ReleaseNotes)'
