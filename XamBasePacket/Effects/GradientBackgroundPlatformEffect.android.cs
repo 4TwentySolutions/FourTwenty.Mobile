@@ -123,8 +123,24 @@ namespace XamBasePacket.Effects
                 drawable = new LayerDrawable(new[] { drawable, rippleDrawable });
             }
 
-            await Task.Delay(15);
-            ViewCompat.SetBackground(View, drawable);
+            //wrap it in try/catch clause to avoid unexpected errors
+            try
+            {
+                //delay to avoid conflict with default background manager
+                await Task.Delay(3);
+                if (View == null || drawable == null)
+                    return;
+
+                ViewCompat.SetBackground(View, drawable);
+            }
+            catch (Java.Lang.Exception e)
+            {
+                Android.Util.Log.Error("GradientBackgroundPlatformEffect", e, "Setting background failed");
+            }
+            catch (Exception e)
+            {
+                Android.Util.Log.Error("GradientBackgroundPlatformEffect", $"Setting background failed {e}");
+            }
         }
 
         private GradientDrawable.Orientation ToOrientation(GradientBackground.Orientation orientation)

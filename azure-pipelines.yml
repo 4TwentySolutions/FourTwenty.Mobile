@@ -11,24 +11,30 @@ pool:
 name: $(packVersion)-pre$(Rev:r)
 
 variables:
-  - group: "Shared"
-  - name: "buildConfiguration"
-    value: "release"
-  - name: "PathToMsBuildOnMacOS"
+  - group: 'Shared'
+  - name: 'buildConfiguration'
+    value: 'release'
+  - name: 'PathToMsBuildOnMacOS'
     value: 'mono /Applications/Visual\ studio.app/Contents/Resources/lib/monodevelop/bin/MSBuild/Current/bin/MSBuild.dll'
-  - name: "PathToXamBaseCsproj"
-    value: "XamBasePacket/XamBasePacket.csproj"
+  - name: 'PathToXamBaseCsproj'
+    value: 'XamBasePacket/XamBasePacket.csproj'
 
-  
 steps:
-  - script: "$(PathToMsBuildOnMacOS) $(PathToXamBaseCsproj) /p:Configuration=$(buildConfiguration) /restore /t:Build /p:ContinuousIntegrationBuild=true /p:Deterministic=false /p:VersionNumber=$(packVersion) /p:Version=$(packVersion)"
-    displayName: Build project  
+  - task: MSBuild@1
+    displayName: Build project
+    inputs:
+      solution: '$(PathToXamBaseCsproj)'
+      configuration: $(buildConfiguration)
+      restoreNugetPackages: true
+      msbuildArguments: '/t:Build /p:ContinuousIntegrationBuild=true /p:Deterministic=false /p:VersionNumber=$(packVersion) /p:Version=$(packVersion)'
+  # - script: '$(PathToMsBuildOnMacOS) $(PathToXamBaseCsproj) /p:Configuration=$(buildConfiguration) /restore /t:Build /p:ContinuousIntegrationBuild=true /p:Deterministic=false /p:VersionNumber=$(packVersion) /p:Version=$(packVersion)'
+  #   displayName: Build project
   - script: echo "##vso[task.setvariable variable=ReleaseNotes]$(cat 'releasenotes.txt')"
-    displayName: "Create release notes from file"
+    displayName: 'Create release notes from file'
   - task: NuGetToolInstaller@1
     displayName: 'Install latest Nuget'
     inputs:
-      versionSpec: 5.x
+      versionSpec: 6.x
   - task: NuGetCommand@2
     displayName: 'NuGet pre-release pack'
     inputs:
