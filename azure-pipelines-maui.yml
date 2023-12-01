@@ -13,8 +13,6 @@ variables:
   - group: 'Shared'
   - name: 'buildConfiguration'
     value: 'release'
-  - name: 'PathToMsBuildOnMacOS'
-    value: 'mono /Applications/Visual\ studio.app/Contents/Resources/lib/monodevelop/bin/MSBuild/Current/bin/MSBuild.dll'
   - name: 'projectPath'
     value: 'FourTwenty.Mobile.Maui/FourTwenty.Mobile.Maui.csproj'
 
