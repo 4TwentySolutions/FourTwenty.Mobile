@@ -17,10 +17,19 @@ variables:
     value: 'FourTwenty.Mobile.Maui/FourTwenty.Mobile.Maui.csproj'
 
 steps:
+  - task: UseDotNet@2
+    displayName: 'Use .NET 8'
+    inputs:
+      packageType: 'sdk'
+      version: '8.x'
+
   - task: NuGetToolInstaller@1
     displayName: 'Install latest Nuget'
     inputs:
       versionSpec: 6.x
+
+  - script: dotnet workload install maui
+    displayName: 'Install maui workload'
 
   - script: dotnet workload restore $(projectPath)
     displayName: 'Restore workloads'
