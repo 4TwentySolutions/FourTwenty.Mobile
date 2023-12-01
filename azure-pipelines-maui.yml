@@ -25,6 +25,9 @@ steps:
   - script: dotnet restore $(projectPath)
     displayName: 'Restore NuGet packages'
 
+  - script: dotnet workload restore $(projectPath)
+    displayName: 'Restore workloads'
+
   - script: echo "##vso[task.setvariable variable=ReleaseNotes]$(cat 'releasenotes.maui.txt')"
     displayName: 'Create release notes from file'
 
