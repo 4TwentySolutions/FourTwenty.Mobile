@@ -10,6 +10,11 @@ namespace FourTwenty.Mobile.Maui.Services.Api.shared
     {
         protected ILogger Logger;
 
+        public SimpleApiManager(ILogger logger)
+        {
+            Logger = logger;
+        }
+
         protected virtual async Task<IResponse> MakeRequest(Func<CancellationToken, Task> loadingFunction, CancellationToken cancellationToken)
         {
             IResponse response = CreateResponse();

@@ -22,7 +22,8 @@
 		<DebugType>embedded</DebugType>
 		<RepositoryUrl>https://github.com/4TwentySolutions/FourTwenty.XamarinBase</RepositoryUrl>
 		<PackageProjectUrl>https://github.com/4TwentySolutions/FourTwenty.XamarinBase</PackageProjectUrl>
-		<PackageIconUrl>https://github.com/4TwentySolutions/FourTwenty.XamarinBase/raw/master/logo_small.png</PackageIconUrl>		
+		<PackageIconUrl>https://github.com/4TwentySolutions/FourTwenty.XamarinBase/raw/master/logo_small.png</PackageIconUrl>
+		<PackageIcon>https://github.com/4TwentySolutions/FourTwenty.XamarinBase/raw/master/logo_small.png</PackageIcon>
 		<Description>Includes all needed classes models and libs to start developing MAUI application by using Prism.</Description>
 		<PackageReleaseNotes>MAUI initial release</PackageReleaseNotes>
 		<PackageTags>MAUI, prism, mvvm</PackageTags>
@@ -30,7 +31,6 @@
 		<PackageLicenseExpression>MIT</PackageLicenseExpression>
 		<Title>FourTwenty.Mobile.Maui</Title>
 		<Product>FourTwenty.Mobile.Maui</Product>
-		<LangVersion>Latest</LangVersion>
 	</PropertyGroup>
 	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
 		<GenerateDocumentationFile>true</GenerateDocumentationFile>

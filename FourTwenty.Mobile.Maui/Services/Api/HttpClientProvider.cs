@@ -37,7 +37,7 @@ namespace FourTwenty.Mobile.Maui.Services.Api
             return client;
         }
 
-        public virtual Task<HttpClient> GetClientAsync(IHttpClientOptions options = null)
+        public virtual Task<HttpClient> GetClientAsync(IHttpClientOptions? options = null)
         {
             return Task.FromResult(GetClient(options));
         }

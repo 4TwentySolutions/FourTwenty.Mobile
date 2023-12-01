@@ -26,9 +26,8 @@ namespace FourTwenty.Mobile.Maui.Services.Api
         protected bool IsConnected => Connectivity.NetworkAccess == NetworkAccess.Internet;
 
 
-        public ApiManager(ILogger logger)
+        public ApiManager(ILogger logger) : base(logger)
         {
-            Logger = logger;
             Connectivity.ConnectivityChanged += Connectivity_ConnectivityChanged;
         }
 
