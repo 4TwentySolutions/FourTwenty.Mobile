@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 16
-VisualStudioVersion = 16.0.29503.13
+# Visual Studio Version 17
+VisualStudioVersion = 17.8.34322.80
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "XamBasePacket", "XamBasePacket\XamBasePacket.csproj", "{D9610432-AE1D-449A-B537-24050473FD9C}"
 EndProject
@@ -11,9 +11,11 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "XamBasePacket.Sample.Androi
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "XamBasePacket.Sample.iOS", "XamBasePacket.Sample\XamBasePacket.Sample.iOS\XamBasePacket.Sample.iOS.csproj", "{DCBD0311-66F4-427C-B474-C6AABA6E4883}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "XamBasePacket.Sample", "XamBasePacket.Sample\XamBasePacket.Sample\XamBasePacket.Sample.csproj", "{6E6804AF-5A60-408C-B8AA-64762179E401}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "XamBasePacket.Sample", "XamBasePacket.Sample\XamBasePacket.Sample\XamBasePacket.Sample.csproj", "{6E6804AF-5A60-408C-B8AA-64762179E401}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Sample", "Sample", "{1B6DBFCA-7489-44BB-859C-0C72927A5810}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FourTwenty.Mobile.Maui", "FourTwenty.Mobile.Maui\FourTwenty.Mobile.Maui.csproj", "{64911DDD-8307-4DAF-B545-7EE659E4CF4F}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -89,6 +91,18 @@ Global
 		{6E6804AF-5A60-408C-B8AA-64762179E401}.Release|iPhone.Build.0 = Release|Any CPU
 		{6E6804AF-5A60-408C-B8AA-64762179E401}.Release|iPhoneSimulator.ActiveCfg = Release|Any CPU
 		{6E6804AF-5A60-408C-B8AA-64762179E401}.Release|iPhoneSimulator.Build.0 = Release|Any CPU
+		{64911DDD-8307-4DAF-B545-7EE659E4CF4F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{64911DDD-8307-4DAF-B545-7EE659E4CF4F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{64911DDD-8307-4DAF-B545-7EE659E4CF4F}.Debug|iPhone.ActiveCfg = Debug|Any CPU
+		{64911DDD-8307-4DAF-B545-7EE659E4CF4F}.Debug|iPhone.Build.0 = Debug|Any CPU
+		{64911DDD-8307-4DAF-B545-7EE659E4CF4F}.Debug|iPhoneSimulator.ActiveCfg = Debug|Any CPU
+		{64911DDD-8307-4DAF-B545-7EE659E4CF4F}.Debug|iPhoneSimulator.Build.0 = Debug|Any CPU
+		{64911DDD-8307-4DAF-B545-7EE659E4CF4F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{64911DDD-8307-4DAF-B545-7EE659E4CF4F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{64911DDD-8307-4DAF-B545-7EE659E4CF4F}.Release|iPhone.ActiveCfg = Release|Any CPU
+		{64911DDD-8307-4DAF-B545-7EE659E4CF4F}.Release|iPhone.Build.0 = Release|Any CPU
+		{64911DDD-8307-4DAF-B545-7EE659E4CF4F}.Release|iPhoneSimulator.ActiveCfg = Release|Any CPU
+		{64911DDD-8307-4DAF-B545-7EE659E4CF4F}.Release|iPhoneSimulator.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
