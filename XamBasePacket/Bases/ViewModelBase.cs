@@ -9,7 +9,6 @@ namespace XamBasePacket.Bases
     public abstract class ViewModelBase : BindableBase, INavigatedAware, IInitialize, IInitializeAsync
     {
 
-
         #region properties
         private bool _isBusy;
         public virtual bool IsBusy
@@ -43,11 +42,6 @@ namespace XamBasePacket.Bases
         {
         }
 
-
-        public virtual void UnauthorizedApiCall()
-        {
-        }
-
         public virtual void DisplayError(Exception ex, string errorMessage = null, bool displayError = true)
         {
             Error = ex;
@@ -57,7 +51,7 @@ namespace XamBasePacket.Bases
 
         public virtual void Initialize(INavigationParameters parameters)
         {
-            ClearErrors();
+
         }
 
         public virtual Task InitializeAsync(INavigationParameters parameters)
@@ -67,11 +61,14 @@ namespace XamBasePacket.Bases
 
 
         #region protected
+
+        public virtual void ShowLoader() => IsBusy = true;
+        public virtual void HideLoader() => IsBusy = false;
+
         protected virtual void OnIsBusyChanged()
         {
 
         }
-
 
 
         protected virtual void ClearErrors()
@@ -83,6 +80,5 @@ namespace XamBasePacket.Bases
 
 
         #endregion
-
     }
 }

@@ -1,48 +1,100 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="MSBuild.Sdk.Extras/3.0.22">
 
-  <PropertyGroup>
-    <TargetFramework>netstandard2.0</TargetFramework>
-    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-    <Authors>Anton Yaroshenko</Authors>
-    <Company>4Twenty Solutions</Company>
-    <RepositoryUrl>https://bitbucket.org/p420_team/fourtwenty.xamarinbase</RepositoryUrl>
-    <PackageProjectUrl>https://bitbucket.org/p420_team/fourtwenty.xamarinbase</PackageProjectUrl>
-    <Version>1.1.17-prerelease</Version>
-    <PackageReleaseNotes>Fixed AccessDisposed exception when using streams with Api service</PackageReleaseNotes>
-    <AssemblyVersion>1.1.17.0</AssemblyVersion>
-    <FileVersion>1.1.17.0</FileVersion>
-  </PropertyGroup>
+    <PropertyGroup>
+        <TargetFrameworks>netstandard2.0;netstandard2.1;Xamarin.iOS10;Xamarin.TVOS10;Xamarin.WatchOS10;MonoAndroid10.0;MonoAndroid11.0;MonoAndroid12.0;MonoAndroid13.0</TargetFrameworks>
+        <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+        <Authors>Anton Yaroshenko, Pavel Kurianov, 4Twenty Solutions</Authors>
+        <Company>4Twenty Solutions</Company>
+        <RepositoryUrl>https://github.com/4TwentySolutions/FourTwenty.XamarinBase</RepositoryUrl>
+        <PackageProjectUrl>https://github.com/4TwentySolutions/FourTwenty.XamarinBase</PackageProjectUrl>
+        <PackageIconUrl>https://github.com/4TwentySolutions/FourTwenty.XamarinBase/raw/master/logo_small.png</PackageIconUrl>
+        <Version>$(packVersion)</Version>
+        <Description>Includes all needed classes models and libs to start developing Xamarin application.</Description>
+        <PackageReleaseNotes>Fixed AccessDisposed exception when using streams with Api service</PackageReleaseNotes>
+        <PackageTags>xamarin forms, prism, mvvm</PackageTags>
+        <PackageId>XamBasePacket</PackageId>
+        <PackageLicenseExpression>MIT</PackageLicenseExpression>
+        <Title>FourTwenty.XamarinBase</Title>
+        <Product>FourTwenty.XamarinBase</Product>
+        <LangVersion>Latest</LangVersion>
+        <EnableDefaultCompileItems>false</EnableDefaultCompileItems>
+    </PropertyGroup>
 
-  <ItemGroup>
-    <PackageReference Include="Newtonsoft.Json" Version="12.0.2" />
-    <PackageReference Include="Plugin.Permissions" Version="3.0.0.12" />
-    <PackageReference Include="Prism.Forms" Version="7.2.0.1367" />
-    <PackageReference Include="Xam.Plugin.Media" Version="4.0.1.5" />
-    <PackageReference Include="System.ComponentModel.Annotations" Version="4.5.0" />
-  </ItemGroup>
+    <ItemGroup>
+        <PackageReference Include="fusillade" Version="2.4.62" />
+        <PackageReference Include="Microsoft.Extensions.Http" Version="7.0.0" />
+        <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="7.0.0" />
+        <PackageReference Include="Polly" Version="7.2.3" />
+        <PackageReference Include="Prism.Forms" Version="8.1.97" />
+        <PackageReference Include="Refit" Version="6.3.2" />
+        <PackageReference Include="Xamarin.Essentials" Version="1.7.4" />
+        <PackageReference Include="Xamarin.Forms" Version="5.0.0.2545" />
+        
+        <Compile Include="Bases\Response.cs" />
+        <Compile Include="Bases\ViewModelBase.cs" />
+        <Compile Include="Effects\BaseOptions.cs" />
+        <Compile Include="Effects\GradientBackgroundEffect.cs" />
+        <Compile Include="Interfaces\**\*.cs" />
+        <Compile Include="Resources\BaseResource.Designer.cs" />
+    </ItemGroup>
+    
+    <ItemGroup>
+        <None Update="Resources\BaseResource.Designer.cs">
+            <DesignTime>True</DesignTime>
+            <AutoGen>True</AutoGen>
+            <DependentUpon>BaseResource.resx</DependentUpon>
+        </None>
+    </ItemGroup>
+    <ItemGroup Condition=" '$(Configuration)'=='Release' And '$(OS)' == 'Windows_NT' ">
+        <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.0.0" PrivateAssets="All" />
+    </ItemGroup>
+    <ItemGroup>
+        <PackageReference Include="Xamarin.Build.TypeRedirector" Version="0.1.2-preview" PrivateAssets="all" />
+        <Compile Include="**\*.shared.cs" />
+        <Compile Include="**\*.shared.*.cs" />
+        <Compile Include="**\*.shared\*.cs" />
+    </ItemGroup>
+    <ItemGroup Condition=" $(TargetFramework.StartsWith('netstandard')) ">
+        <None Update="Validation\Resources\XamValidationResources.Designer.cs">
+            <DesignTime>True</DesignTime>
+            <AutoGen>True</AutoGen>
+            <DependentUpon>XamValidationResources.resx</DependentUpon>
+        </None>
 
-  <ItemGroup>
-    <Compile Update="Bases\Validation\Resources\XamValidationResources.Designer.cs">
-      <DesignTime>True</DesignTime>
-      <AutoGen>True</AutoGen>
-      <DependentUpon>XamValidationResources.resx</DependentUpon>
-    </Compile>
-    <Compile Update="Resources\BaseResource.Designer.cs">
-      <DesignTime>True</DesignTime>
-      <AutoGen>True</AutoGen>
-      <DependentUpon>BaseResource.resx</DependentUpon>
-    </Compile>
-  </ItemGroup>
+        <PackageReference Include="System.Numerics.Vectors" Version="4.5.0" />
+        <PackageReference Include="System.ComponentModel.Annotations" Version="5.0.0" />
+        <Compile Include="Validation\ValidableClassAttribute.cs" />
+        <Compile Include="Validation\ValidationViewModelBase.cs" />
+        
+        <Compile Include="**\*.netstandard.cs" />
+        <Compile Include="**\*.netstandard.*.cs" />
+        <Compile Include="**\*.netstandard\*.cs" />
+    </ItemGroup>
+    <ItemGroup Condition=" $(TargetFramework.StartsWith('MonoAndroid')) ">
+        <Reference Include="System.Numerics" />
+        <Reference Include="System.Numerics.Vectors" />
 
-  <ItemGroup>
-    <EmbeddedResource Update="Bases\Validation\Resources\XamValidationResources.resx">
-      <Generator>PublicResXFileCodeGenerator</Generator>
-      <LastGenOutput>XamValidationResources.Designer.cs</LastGenOutput>
-    </EmbeddedResource>
-    <EmbeddedResource Update="Resources\BaseResource.resx">
-      <Generator>ResXFileCodeGenerator</Generator>
-      <LastGenOutput>BaseResource.Designer.cs</LastGenOutput>
-    </EmbeddedResource>
-  </ItemGroup>
-
+        <Compile Include="**\*.android.cs" />
+        <Compile Include="**\*.android.*.cs" />
+    </ItemGroup>
+    <ItemGroup Condition=" $(TargetFramework.StartsWith('Xamarin.iOS')) ">
+        <Compile Include="**\*.ios.cs" />
+        <Compile Include="**\*.ios.*.cs" />
+        <Reference Include="System.Numerics" />
+        <Reference Include="System.Numerics.Vectors" />
+        <Reference Include="OpenTK-1.0" />
+    </ItemGroup>
+    <ItemGroup Condition=" $(TargetFramework.StartsWith('Xamarin.TVOS')) ">
+        <Compile Include="**\*.tvos.cs" />
+        <Compile Include="**\*.tvos.*.cs" />
+        <Reference Include="System.Numerics" />
+        <Reference Include="System.Numerics.Vectors" />
+        <Reference Include="OpenTK-1.0" />
+    </ItemGroup>
+    <ItemGroup Condition=" $(TargetFramework.StartsWith('Xamarin.WatchOS')) ">
+        <Compile Include="**\*.watchos.cs" />
+        <Compile Include="**\*.watchos.*.cs" />
+        <Reference Include="System.Numerics" />
+        <Reference Include="System.Numerics.Vectors" />
+    </ItemGroup>
 </Project>
