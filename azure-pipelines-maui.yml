@@ -7,7 +7,7 @@ trigger:
 pool:
   vmImage: macos-latest
 
-name: $(mauiPackVersion)(Rev:.r)
+name: $(mauiPackVersion)$(Rev:.r)
 
 variables:
   - group: 'Shared'
